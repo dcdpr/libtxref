@@ -1,0 +1,3 @@
+[submodule "libbech32"]
+	path = libbech32
+	url = git@github.com:dcdpr/libbech32.git
