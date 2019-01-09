@@ -1,4 +1,3 @@
-include(../../cmake/FindBitcoinApiCpp.cmake)
 
 add_executable(UnitTests_txref main.cpp test_Txref.cpp test_Txref_api.cpp)
 
