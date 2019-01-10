@@ -17,8 +17,12 @@ option(LIBBECH32_BUILD_RAPIDCHECK OFF)
 add_subdirectory(libbech32)
 
 add_subdirectory(libtxref)
-#add_subdirectory(src)
 
 enable_testing()
+
+# Set options so we build googletest and rapidcheck. Other projects that
+# embed libtxref should set these options to OFF
+option(LIBTXREF_BUILD_GOOGLETEST "Build googletest" ON)
+option(LIBTXREF_BUILD_RAPIDCHECK "Build rapidcheck" ON)
 add_subdirectory(test)
 
