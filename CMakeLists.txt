@@ -26,3 +26,4 @@ option(LIBTXREF_BUILD_GOOGLETEST "Build googletest" ON)
 option(LIBTXREF_BUILD_RAPIDCHECK "Build rapidcheck" ON)
 add_subdirectory(test)
 
+add_subdirectory(examples)

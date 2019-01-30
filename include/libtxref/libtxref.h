@@ -97,6 +97,11 @@ namespace txref {
 
 // C bindings - structs and functions
 
+#ifndef __cplusplus
+#include <stddef.h>
+#include <stdbool.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
