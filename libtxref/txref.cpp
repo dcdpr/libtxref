@@ -140,13 +140,15 @@ namespace {
         return result;
     }
 
-            // extract the magic code from the decoded data part
+    // extract the magic code from the decoded data part
     void extractMagicCode(uint8_t & magicCode, const bech32::HrpAndDp &hd) {
+        assert(!hd.dp.empty());
         magicCode = hd.dp[0];
     }
 
     // extract the version from the decoded data part
     void extractVersion(uint8_t & version, const bech32::HrpAndDp &hd) {
+        assert(hd.dp.size() > 1);
         version = hd.dp[1] & 0x1u;
     }
 
@@ -385,7 +387,12 @@ namespace txref {
         txrefClean = addHrpIfNeeded(txrefClean);
         bech32::HrpAndDp bs = bech32::decode(txrefClean);
 
+        auto hrpLength = bs.hrp.length();
         auto dataSize = bs.dp.size();
+
+        if(hrpLength == 0 && dataSize == 0) {
+            throw std::runtime_error("checksum is invalid");
+        }
         if(!isDataSizeValid(dataSize)) {
             throw std::runtime_error("decoded dp size is incorrect");
         }

@@ -72,3 +72,75 @@ automatically initialize and update each submodule in the repository:
 git clone --recurse-submodules git@github.com:dcdpr/libtxref.git
 ```
 
+### C++ Usage Example
+
+```cpp
+#include "libtxref.h"
+#include <string>
+#include <iostream>
+#include <cassert>
+
+int main() {
+
+    // encode: mainnet, extended txref example
+
+    int blockHeight = 10000;
+    int transactionPosition = 2;
+    int txoIndex = 3;
+
+    std::string txref = txref::encode(blockHeight, transactionPosition, txoIndex);
+
+    std::cout << "mainnet, extended txref for (blockHeight = 10000, transactionPosition=2, txoIndex=3):" << std::endl;
+    std::cout << txref << "\n\n";
+    assert(txref == "tx1:yq3n-qqzq-qrqq-0p67-s0");
+
+    // decode
+
+    txref::LocationData loc = txref::decode(txref);
+
+    assert(loc.hrp == "tx");
+    assert(loc.magicCode == txref::MAGIC_BTC_MAIN_EXTENDED);
+    assert(loc.blockHeight == 10000);
+    assert(loc.transactionPosition == 2);
+    assert(loc.txoIndex == 3);
+}
+```
+
+### C Usage Example
+
+```C
+#include "libtxref.h"
+#include <string.h>
+#include <stdio.h>
+#include <assert.h>
+
+int main() {
+    char main_hrp[] = "tx";
+
+    // encode: mainnet, extended txref example
+
+    int blockHeight = 10000;
+    int transactionPosition = 2;
+    int txoIndex = 3;
+
+    char *txref = create_Txref_storage();
+
+    assert(txref_encode(txref, max_Txref_length(), blockHeight, transactionPosition, txoIndex,
+                        false, main_hrp, sizeof(main_hrp)) == E_TXREF_SUCCESS);
+
+    printf("mainnet, extended txref for (blockHeight = 10000, transactionPosition=2, txoIndex=3):\n%s\n\n", txref);
+    assert(strcmp(txref, "tx1:yq3n-qqzq-qrqq-0p67-s0") == 0);
+
+    // decode
+
+    txref_LocationData *locationData = create_LocationData_storage();
+
+    assert(txref_decode(locationData, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
+    assert(locationData->blockHeight == 10000);
+    assert(locationData->transactionPosition == 2);
+    assert(locationData->txoIndex == 3);
+
+    free_LocationData_storage(locationData);
+    free_Txref_storage(txref);
+}
+```
