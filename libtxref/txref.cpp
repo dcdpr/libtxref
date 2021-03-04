@@ -141,28 +141,28 @@ namespace {
     }
 
     // extract the magic code from the decoded data part
-    void extractMagicCode(uint8_t & magicCode, const bech32::HrpAndDp &hd) {
-        assert(!hd.dp.empty());
-        magicCode = hd.dp[0];
+    void extractMagicCode(uint8_t & magicCode, const std::vector<unsigned char> &dp) {
+        assert(!dp.empty());
+        magicCode = dp[0];
     }
 
     // extract the version from the decoded data part
-    void extractVersion(uint8_t & version, const bech32::HrpAndDp &hd) {
-        assert(hd.dp.size() > 1);
-        version = hd.dp[1] & 0x1u;
+    void extractVersion(uint8_t & version, const std::vector<unsigned char> &dp) {
+        assert(dp.size() > 1);
+        version = dp[1] & 0x1u;
     }
 
     // extract the block height from the decoded data part
-    void extractBlockHeight(int & blockHeight, const bech32::HrpAndDp &hd) {
+    void extractBlockHeight(int & blockHeight, const std::vector<unsigned char> &dp) {
         uint8_t version = 0;
-        extractVersion(version, hd);
+        extractVersion(version, dp);
 
         if(version == 0) {
-            blockHeight = (hd.dp[1] >> 1u);
-            blockHeight |= (hd.dp[2] << 4u);
-            blockHeight |= (hd.dp[3] << 9u);
-            blockHeight |= (hd.dp[4] << 14u);
-            blockHeight |= (hd.dp[5] << 19u);
+            blockHeight = (dp[1] >> 1u);
+            blockHeight |= (dp[2] << 4u);
+            blockHeight |= (dp[3] << 9u);
+            blockHeight |= (dp[4] << 14u);
+            blockHeight |= (dp[5] << 19u);
         }
         else {
             std::stringstream ss;
@@ -172,14 +172,14 @@ namespace {
     }
 
     // extract the transaction position from the decoded data part
-    void extractTransactionPosition(int & transactionPosition, const bech32::HrpAndDp &hd) {
+    void extractTransactionPosition(int & transactionPosition, const std::vector<unsigned char> &dp) {
         uint8_t version = 0;
-        extractVersion(version, hd);
+        extractVersion(version, dp);
 
         if(version == 0) {
-            transactionPosition = hd.dp[6];
-            transactionPosition |= (hd.dp[7] << 5u);
-            transactionPosition |= (hd.dp[8] << 10u);
+            transactionPosition = dp[6];
+            transactionPosition |= (dp[7] << 5u);
+            transactionPosition |= (dp[8] << 10u);
         }
         else {
             std::stringstream ss;
@@ -189,20 +189,20 @@ namespace {
     }
 
     // extract the TXO index from the decoded data part
-    void extractTxoIndex(int &txoIndex, const bech32::HrpAndDp &hd) {
-        if(hd.dp.size() < 12) {
+    void extractTxoIndex(int &txoIndex, const std::vector<unsigned char> &dp) {
+        if(dp.size() < 12) {
             // non-extended txrefs don't store the txoIndex, so just return 0
             txoIndex = 0;
             return;
         }
 
         uint8_t version = 0;
-        extractVersion(version, hd);
+        extractVersion(version, dp);
 
         if(version == 0) {
-            txoIndex = hd.dp[9];
-            txoIndex |= (hd.dp[10] << 5u);
-            txoIndex |= (hd.dp[11] << 10u);
+            txoIndex = dp[9];
+            txoIndex |= (dp[10] << 5u);
+            txoIndex |= (dp[11] << 10u);
         }
         else {
             std::stringstream ss;
@@ -326,12 +326,12 @@ namespace {
         std::string s = bech32::stripUnknownChars(str);
 
         if(s.length() == TXREF_STRING_MIN_LENGTH || s.length() == TXREF_STRING_MIN_LENGTH_TESTNET )
-            return txref_param;
+            return InputParam::txref;
 
         if(s.length() == TXREF_EXT_STRING_MIN_LENGTH || s.length() == TXREF_EXT_STRING_MIN_LENGTH_TESTNET)
-            return txrefext_param;
+            return InputParam::txrefext;
 
-        return unknown_param;
+        return InputParam::unknown;
     }
 
     InputParam classifyInputStringMissingHRP(const std::string & str) {
@@ -341,12 +341,12 @@ namespace {
         std::string s = bech32::stripUnknownChars(str);
 
         if(s.length() == TXREF_STRING_NO_HRP_MIN_LENGTH)
-            return txref_param;
+            return InputParam::txref;
 
         if(s.length() == TXREF_EXT_STRING_NO_HRP_MIN_LENGTH)
-            return txrefext_param;
+            return InputParam::txrefext;
 
-        return unknown_param;
+        return InputParam::unknown;
     }
 
 }
@@ -381,14 +381,14 @@ namespace txref {
 
     }
 
-    LocationData decode(const std::string & txref) {
+    DecodedResult decode(const std::string & txref) {
 
         std::string txrefClean = bech32::stripUnknownChars(txref);
         txrefClean = addHrpIfNeeded(txrefClean);
-        bech32::HrpAndDp bs = bech32::decode(txrefClean);
+        bech32::DecodedResult bech32DecodedResult = bech32::decode(txrefClean);
 
-        auto hrpLength = bs.hrp.length();
-        auto dataSize = bs.dp.size();
+        auto hrpLength = bech32DecodedResult.hrp.length();
+        auto dataSize = bech32DecodedResult.dp.size();
 
         if(hrpLength == 0 && dataSize == 0) {
             throw std::runtime_error("checksum is invalid");
@@ -398,32 +398,49 @@ namespace txref {
         }
 
         uint8_t magicCode;
-        extractMagicCode(magicCode, bs);
+        extractMagicCode(magicCode, bech32DecodedResult.dp);
 
-        LocationData data;
-        data.txref = prettyPrint(txrefClean, bs.hrp.length());
-        data.hrp = bs.hrp;
-        data.magicCode = magicCode;
-        extractBlockHeight(data.blockHeight, bs);
-        extractTransactionPosition(data.transactionPosition, bs);
-        extractTxoIndex(data.txoIndex, bs);
+        DecodedResult result;
+        result.txref = prettyPrint(txrefClean, bech32DecodedResult.hrp.length());
+        result.hrp = bech32DecodedResult.hrp;
+        result.magicCode = magicCode;
+        extractBlockHeight(result.blockHeight, bech32DecodedResult.dp);
+        extractTransactionPosition(result.transactionPosition, bech32DecodedResult.dp);
+        extractTxoIndex(result.txoIndex, bech32DecodedResult.dp);
 
-        return data;
+        if(bech32DecodedResult.encoding == bech32::Encoding::Bech32m) {
+            result.encoding = Encoding::Bech32m;
+        }
+        else if(bech32DecodedResult.encoding == bech32::Encoding::Bech32) {
+            result.encoding = Encoding::Bech32;
+            std::string updatedTxref;
+            if(result.magicCode == MAGIC_BTC_MAIN_EXTENDED || result.magicCode == MAGIC_BTC_TEST_EXTENDED) {
+                updatedTxref = txrefExtEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionPosition, result.txoIndex);
+            }
+            else {
+                updatedTxref = txrefEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionPosition);
+            }
+            result.commentary = "The txref " + result.txref +
+                                " uses an old encoding scheme and should be updated to " + updatedTxref +
+                                " See https://github.com/dcdpr/libtxref#regarding-bech32-checksums for more information.";
+        }
+
+        return result;
     }
 
     InputParam classifyInputString(const std::string & str) {
 
         if(str.empty())
-            return unknown_param;
+            return InputParam::unknown;
 
         // if exactly 64 chars in length, it is likely a transaction id
         if(str.length() == 64)
-            return txid_param;
+            return InputParam::txid;
 
         // if it starts with certain chars, and is of a certain length, it may be a bitcoin address
         if(str[0] == '1' || str[0] == '3' || str[0] == 'm' || str[0] == 'n' || str[0] == '2')
             if(str.length() >= 26 && str.length() < 36)
-                return address_param;
+                return InputParam::address;
 
         // check if it could be a standard txref or txrefext
         InputParam baseResult = classifyInputStringBase(str);
@@ -432,24 +449,24 @@ namespace txref {
         InputParam missingResult = classifyInputStringMissingHRP(str);
 
         // if one result is 'unknown' and the other isn't, then return the good one
-        if(baseResult != unknown_param && missingResult == unknown_param)
+        if(baseResult != InputParam::unknown && missingResult == InputParam::unknown)
             return baseResult;
-        if(baseResult == unknown_param && missingResult != unknown_param)
+        if(baseResult == InputParam::unknown && missingResult != InputParam::unknown)
             return missingResult;
 
-        // special case: if baseResult is 'txref_param' and missingResult is 'txrefext_param' then
+        // special case: if baseResult is 'txref_param' and missingResult is 'txrefext' then
         // we need to dig deeper as TXREF_STRING_MIN_LENGTH == TXREF_EXT_STRING_NO_HRP_MIN_LENGTH
-        if (baseResult == txref_param && missingResult == txrefext_param) {
+        if (baseResult == InputParam::txref && missingResult == InputParam::txrefext) {
             if (str[0] == txref::BECH32_HRP_MAIN[0] && // 't'
                 str[1] == txref::BECH32_HRP_MAIN[1] && // 'x'
                 str[2] == bech32::separator)           // '1'
-                return txref_param;
+                return InputParam::txref;
             else
-                return txrefext_param;
+                return InputParam::txrefext;
         }
 
         // otherwise, just return
-        assert(baseResult == unknown_param);
+        assert(baseResult == InputParam::unknown);
         return baseResult;
     }
 
@@ -520,43 +537,47 @@ void free_Txref_storage(char *txref) {
  }
 
 /**
- * Allocates memory for a txref_LocationData struct and returns a pointer.
+ * Allocates memory for a txref_DecodedResult struct and returns a pointer.
  *
  * This struct will be able to handle any size txref.
  *
- * This memory must be freed using the free_LocationData_storage function.
+ * This memory must be freed using the free_DecodedResult_storage function.
  *
- * @return a pointer to a new txref_LocationData struct, or NULL if error
+ * @return a pointer to a new txref_DecodedResult struct, or NULL if error
  */
- extern "C"
-txref_LocationData * create_LocationData_storage() {
-    auto locationData =
-            static_cast<txref_LocationData *> (calloc(1, sizeof(txref_LocationData)));
-    if(locationData == nullptr)
+extern "C"
+txref_DecodedResult * create_DecodedResult_storage() {
+    auto decodedResult =
+            static_cast<txref_DecodedResult *> (calloc(1, sizeof(txref_DecodedResult)));
+    if(decodedResult == nullptr)
         return nullptr;
-    locationData->txreflen = size_t(txref::limits::TXREF_MAX_LENGTH) + 1;
-    locationData->txref = create_Txref_storage();
-    if(locationData->txref == nullptr) {
-        free(locationData);
-        return nullptr;
-    }
-    locationData->hrplen = (txref::limits::TXREF_EXT_STRING_MIN_LENGTH_TESTNET - txref::limits::TXREF_EXT_STRING_NO_HRP_MIN_LENGTH) + 1;
-    locationData->hrp = static_cast<char *> (calloc(locationData->hrplen, 1));
-    if(locationData->hrp == nullptr) {
-        free_Txref_storage(locationData->txref);
-        free(locationData);
+    decodedResult->txreflen = size_t(txref::limits::TXREF_MAX_LENGTH) + 1;
+    decodedResult->txref = create_Txref_storage();
+    if(decodedResult->txref == nullptr) {
+        free(decodedResult);
         return nullptr;
     }
-    return locationData;
+    decodedResult->hrplen = (txref::limits::TXREF_EXT_STRING_MIN_LENGTH_TESTNET - txref::limits::TXREF_EXT_STRING_NO_HRP_MIN_LENGTH) + 1;
+    decodedResult->hrp = static_cast<char *> (calloc(decodedResult->hrplen, 1));
+    if(decodedResult->hrp == nullptr) {
+        free_Txref_storage(decodedResult->txref);
+        free(decodedResult);
+        return nullptr;
+    }
+    // note: we don't allocate memory for the commentary string as it will only be needed
+    // in a few situations and can be allocated at that time.
+    return decodedResult;
 }
 
 /**
- * Frees memory for a txref_LocationData struct.
+ * Frees memory for a txref_DecodedResult struct.
  */
-void free_LocationData_storage(txref_LocationData *locationData) {
-    free(locationData->hrp);
-    free_Txref_storage(locationData->txref);
-    free(locationData);
+extern "C"
+void free_DecodedResult_storage(txref_DecodedResult *decodedResult) {
+    free(decodedResult->hrp);
+    free_Txref_storage(decodedResult->txref);
+    free(decodedResult->commentary);
+    free(decodedResult);
 }
 
 /**
@@ -673,7 +694,7 @@ txref_error txref_encodeTestnet(
  * decodes a bech32 encoded "transaction position reference" (txref) and
  * returns identifying data
  *
- * @param locationData pointer to struct to copy the decoded transaction data
+ * @param decodedResult pointer to struct to copy the decoded transaction data
  * @param txref the txref string to decode
  * @param txreflen the length of the txref string
  *
@@ -681,15 +702,15 @@ txref_error txref_encodeTestnet(
  */
 extern "C"
 txref_error txref_decode(
-        txref_LocationData *locationData,
+        txref_DecodedResult *decodedResult,
         const char * txref,
         size_t txreflen) {
 
-    if(locationData == nullptr)
+    if(decodedResult == nullptr)
         return E_TXREF_NULL_ARGUMENT;
-    if(locationData->txref == nullptr)
+    if(decodedResult->txref == nullptr)
         return E_TXREF_NULL_ARGUMENT;
-    if(locationData->hrp == nullptr)
+    if(decodedResult->hrp == nullptr)
         return E_TXREF_NULL_ARGUMENT;
     if(txref == nullptr)
         return E_TXREF_NULL_ARGUMENT;
@@ -698,24 +719,32 @@ txref_error txref_decode(
     if(inputTxref.size() > txreflen-1)
         return E_TXREF_LENGTH_TOO_SHORT;
 
-    txref::LocationData ld;
+    txref::DecodedResult d;
     try {
-        ld = txref::decode(inputTxref);
+        d = txref::decode(inputTxref);
     } catch (std::exception &) {
         // todo: convert exception message
         return E_TXREF_UNKNOWN_ERROR;
     }
 
-    locationData->magicCode = ld.magicCode;
-    locationData->blockHeight = ld.blockHeight;
-    locationData->transactionPosition = ld.transactionPosition;
-    locationData->txoIndex = ld.txoIndex;
+    decodedResult->magicCode = d.magicCode;
+    decodedResult->blockHeight = d.blockHeight;
+    decodedResult->transactionPosition = d.transactionPosition;
+    decodedResult->txoIndex = d.txoIndex;
 
-    std::copy_n(ld.hrp.begin(), ld.hrp.size(), locationData->hrp);
-    locationData->hrp[ld.hrp.size()] = '\0';
+    std::copy_n(d.hrp.begin(), d.hrp.size(), decodedResult->hrp);
+    decodedResult->hrp[d.hrp.size()] = '\0';
 
-    std::copy_n(ld.txref.begin(), ld.txref.size(), locationData->txref);
-    locationData->txref[ld.txref.size()] = '\0';
+    std::copy_n(d.txref.begin(), d.txref.size(), decodedResult->txref);
+    decodedResult->txref[d.txref.size()] = '\0';
+
+    decodedResult->encoding = static_cast<txref_encoding>(d.encoding);
+
+    if(!d.commentary.empty()) {
+        decodedResult->commentary = static_cast<char *> (calloc(d.commentary.size()+1, 1));
+        std::copy_n(d.commentary.begin(), d.commentary.size(), decodedResult->commentary);
+        decodedResult->commentary[d.commentary.size()] = '\0';
+    }
 
     return E_TXREF_SUCCESS;
 }

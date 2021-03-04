@@ -23,18 +23,18 @@ int main() {
                         false, main_hrp, sizeof(main_hrp)) == E_TXREF_SUCCESS);
 
     printf("mainnet, extended txref for (blockHeight = 10000, transactionPosition=2, txoIndex=3):\n%s\n\n", txref);
-    assert(strcmp(txref, "tx1:yq3n-qqzq-qrqq-0p67-s0") == 0);
+    assert(strcmp(txref, "tx1:yq3n-qqzq-qrqq-9z4d-2n") == 0);
 
     // decode
 
-    txref_LocationData *locationData = create_LocationData_storage();
+    txref_DecodedResult *decodedResult = create_DecodedResult_storage();
 
-    assert(txref_decode(locationData, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
-    assert(locationData->blockHeight == 10000);
-    assert(locationData->transactionPosition == 2);
-    assert(locationData->txoIndex == 3);
+    assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
+    assert(decodedResult->blockHeight == 10000);
+    assert(decodedResult->transactionPosition == 2);
+    assert(decodedResult->txoIndex == 3);
 
-    free_LocationData_storage(locationData);
+    free_DecodedResult_storage(decodedResult);
     free_Txref_storage(txref);
 
 }
