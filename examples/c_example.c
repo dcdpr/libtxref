@@ -27,7 +27,7 @@ void encodingExamples() {
                         false, main_hrp, sizeof(main_hrp)) == E_TXREF_SUCCESS);
 
     printf("mainnet, standard txref for (blockHeight = 10000, transactionPosition=2):\n%s\n\n", txref);
-    assert(strcmp(txref, "tx1:rq3n-qqzq-quye-gc3") == 0);
+    assert(strcmp(txref, "tx1:rq3n-qqzq-qk8k-mzd") == 0);
 
 
     // testnet, standard txref example
@@ -40,7 +40,7 @@ void encodingExamples() {
                         false, test_hrp, sizeof(test_hrp)) == E_TXREF_SUCCESS);
 
     printf("testnet, standard txref for (blockHeight = 10000, transactionPosition=4):\n%s\n\n", txref);
-    assert(strcmp(txref, "txtest1:xq3n-qqyq-qaq8-m7d") == 0);
+    assert(strcmp(txref, "txtest1:xq3n-qqyq-qhrg-gy3") == 0);
 
 
     // mainnet, extended txref example
@@ -53,7 +53,7 @@ void encodingExamples() {
                         false, main_hrp, sizeof(main_hrp)) == E_TXREF_SUCCESS);
 
     printf("mainnet, extended txref for (blockHeight = 10000, transactionPosition=2, txoIndex=3):\n%s\n\n", txref);
-    assert(strcmp(txref, "tx1:yq3n-qqzq-qrqq-0p67-s0") == 0);
+    assert(strcmp(txref, "tx1:yq3n-qqzq-qrqq-9z4d-2n") == 0);
 
 
     // testnet, extended txref example
@@ -66,7 +66,7 @@ void encodingExamples() {
                         false, test_hrp, sizeof(test_hrp)) == E_TXREF_SUCCESS);
 
     printf("testnet, extended txref for (blockHeight = 10000, transactionPosition=4, txoIndex=6):\n%s\n\n", txref);
-    assert(strcmp(txref, "txtest1:8q3n-qqyq-qxqq-xjfx-c9") == 0);
+    assert(strcmp(txref, "txtest1:8q3n-qqyq-qxqq-v3x4-ze") == 0);
 
 
     free_Txref_storage(txref);
@@ -79,58 +79,58 @@ void decodingExamples() {
     char test_hrp[] = "txtest";
 
     char *txref = create_Txref_storage();
-    txref_LocationData *locationData = create_LocationData_storage();
+    txref_DecodedResult *decodedResult = create_DecodedResult_storage();
 
 
     // mainnet, standard txref example
 
-    strcpy(txref, "tx1:rq3n-qqzq-quye-gc3");
+    strcpy(txref, "tx1:rq3n-qqzq-qk8k-mzd");
 
-    assert(txref_decode(locationData, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
-    assert(locationData->blockHeight == 10000);
-    assert(locationData->transactionPosition == 2);
-    assert(locationData->txoIndex == 0);
-    assert(strcmp(locationData->txref, txref) == 0);
-    assert(strcmp(locationData->hrp, main_hrp) == 0);
+    assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
+    assert(decodedResult->blockHeight == 10000);
+    assert(decodedResult->transactionPosition == 2);
+    assert(decodedResult->txoIndex == 0);
+    assert(strcmp(decodedResult->txref, txref) == 0);
+    assert(strcmp(decodedResult->hrp, main_hrp) == 0);
 
 
     // testnet, standard txref example
 
-    strcpy(txref, "txtest1:xq3n-qqyq-qaq8-m7d");
+    strcpy(txref, "txtest1:xq3n-qqyq-qhrg-gy3");
 
-    assert(txref_decode(locationData, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
-    assert(locationData->blockHeight == 10000);
-    assert(locationData->transactionPosition == 4);
-    assert(locationData->txoIndex == 0);
-    assert(strcmp(locationData->txref, txref) == 0);
-    assert(strcmp(locationData->hrp, test_hrp) == 0);
+    assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
+    assert(decodedResult->blockHeight == 10000);
+    assert(decodedResult->transactionPosition == 4);
+    assert(decodedResult->txoIndex == 0);
+    assert(strcmp(decodedResult->txref, txref) == 0);
+    assert(strcmp(decodedResult->hrp, test_hrp) == 0);
 
 
     // mainnet, extended txref example
 
-    strcpy(txref, "tx1:yq3n-qqzq-qrqq-0p67-s0");
+    strcpy(txref, "tx1:yq3n-qqzq-qrqq-9z4d-2n");
 
-    assert(txref_decode(locationData, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
-    assert(locationData->blockHeight == 10000);
-    assert(locationData->transactionPosition == 2);
-    assert(locationData->txoIndex == 3);
-    assert(strcmp(locationData->txref, txref) == 0);
-    assert(strcmp(locationData->hrp, main_hrp) == 0);
+    assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
+    assert(decodedResult->blockHeight == 10000);
+    assert(decodedResult->transactionPosition == 2);
+    assert(decodedResult->txoIndex == 3);
+    assert(strcmp(decodedResult->txref, txref) == 0);
+    assert(strcmp(decodedResult->hrp, main_hrp) == 0);
 
 
     // testnet, extended txref example
 
-    strcpy(txref, "txtest1:8q3n-qqyq-qxqq-xjfx-c9");
+    strcpy(txref, "txtest1:8q3n-qqyq-qxqq-v3x4-ze");
 
-    assert(txref_decode(locationData, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
-    assert(locationData->blockHeight == 10000);
-    assert(locationData->transactionPosition == 4);
-    assert(locationData->txoIndex == 6);
-    assert(strcmp(locationData->txref, txref) == 0);
-    assert(strcmp(locationData->hrp, test_hrp) == 0);
+    assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
+    assert(decodedResult->blockHeight == 10000);
+    assert(decodedResult->transactionPosition == 4);
+    assert(decodedResult->txoIndex == 6);
+    assert(strcmp(decodedResult->txref, txref) == 0);
+    assert(strcmp(decodedResult->hrp, test_hrp) == 0);
 
 
-    free_LocationData_storage(locationData);
+    free_DecodedResult_storage(decodedResult);
     free_Txref_storage(txref);
 
 }

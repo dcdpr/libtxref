@@ -22,7 +22,7 @@ void encodingExamples() {
 
     std::cout << "mainnet, standard txref for (blockHeight = 10000, transactionPosition=2):" << std::endl;
     std::cout << txref << "\n\n";
-    assert(txref == "tx1:rq3n-qqzq-quye-gc3");
+    assert(txref == "tx1:rq3n-qqzq-qk8k-mzd");
 
 
     // testnet, standard txref example
@@ -34,7 +34,7 @@ void encodingExamples() {
 
     std::cout << "testnet, standard txref for (blockHeight = 10000, transactionPosition=4):" << std::endl;
     std::cout << txref << "\n\n";
-    assert(txref == "txtest1:xq3n-qqyq-qaq8-m7d");
+    assert(txref == "txtest1:xq3n-qqyq-qhrg-gy3");
 
 
     // mainnet, extended txref example
@@ -47,7 +47,7 @@ void encodingExamples() {
 
     std::cout << "mainnet, extended txref for (blockHeight = 10000, transactionPosition=2, txoIndex=3):" << std::endl;
     std::cout << txref << "\n\n";
-    assert(txref == "tx1:yq3n-qqzq-qrqq-0p67-s0");
+    assert(txref == "tx1:yq3n-qqzq-qrqq-9z4d-2n");
 
 
     // testnet, extended txref example
@@ -60,55 +60,59 @@ void encodingExamples() {
 
     std::cout << "testnet, extended txref for (blockHeight = 10000, transactionPosition=4, txoIndex=6):" << std::endl;
     std::cout << txref << "\n\n";
-    assert(txref == "txtest1:8q3n-qqyq-qxqq-xjfx-c9");
+    assert(txref == "txtest1:8q3n-qqyq-qxqq-v3x4-ze");
 
 }
 
 void decodingExamples() {
 
-    txref::LocationData loc;
+    txref::DecodedResult decodedResult;
 
 
     // mainnet, standard txref example
 
-    loc = txref::decode("tx1:rq3n-qqzq-quye-gc3");
+    decodedResult = txref::decode("tx1:rq3n-qqzq-qk8k-mzd");
 
-    assert(loc.hrp == "tx");
-    assert(loc.magicCode == txref::MAGIC_BTC_MAIN);
-    assert(loc.blockHeight == 10000);
-    assert(loc.transactionPosition == 2);
+    assert(decodedResult.hrp == txref::BECH32_HRP_MAIN);
+    assert(decodedResult.magicCode == txref::MAGIC_BTC_MAIN);
+    assert(decodedResult.blockHeight == 10000);
+    assert(decodedResult.transactionPosition == 2);
+    assert(decodedResult.encoding == txref::Bech32m);
 
 
     // testnet, standard txref example
 
-    loc = txref::decode("txtest1:xq3n-qqyq-qaq8-m7d");
+    decodedResult = txref::decode("txtest1:xq3n-qqyq-qhrg-gy3");
 
-    assert(loc.hrp == "txtest");
-    assert(loc.magicCode == txref::MAGIC_BTC_TEST);
-    assert(loc.blockHeight == 10000);
-    assert(loc.transactionPosition == 4);
+    assert(decodedResult.hrp == txref::BECH32_HRP_TEST);
+    assert(decodedResult.magicCode == txref::MAGIC_BTC_TEST);
+    assert(decodedResult.blockHeight == 10000);
+    assert(decodedResult.transactionPosition == 4);
+    assert(decodedResult.encoding == txref::Bech32m);
 
 
     // mainnet, extended txref example
 
-    loc = txref::decode("tx1:yq3n-qqzq-qrqq-0p67-s0");
+    decodedResult = txref::decode("tx1:yq3n-qqzq-qrqq-9z4d-2n");
 
-    assert(loc.hrp == "tx");
-    assert(loc.magicCode == txref::MAGIC_BTC_MAIN_EXTENDED);
-    assert(loc.blockHeight == 10000);
-    assert(loc.transactionPosition == 2);
-    assert(loc.txoIndex == 3);
+    assert(decodedResult.hrp == "tx");
+    assert(decodedResult.magicCode == txref::MAGIC_BTC_MAIN_EXTENDED);
+    assert(decodedResult.blockHeight == 10000);
+    assert(decodedResult.transactionPosition == 2);
+    assert(decodedResult.txoIndex == 3);
+    assert(decodedResult.encoding == txref::Bech32m);
 
 
     // testnet, extended txref example
 
-    loc = txref::decode("txtest1:8q3n-qqyq-qxqq-xjfx-c9");
+    decodedResult = txref::decode("txtest1:8q3n-qqyq-qxqq-v3x4-ze");
 
-    assert(loc.hrp == "txtest");
-    assert(loc.magicCode == txref::MAGIC_BTC_TEST_EXTENDED);
-    assert(loc.blockHeight == 10000);
-    assert(loc.transactionPosition == 4);
-    assert(loc.txoIndex == 6);
+    assert(decodedResult.hrp == "txtest");
+    assert(decodedResult.magicCode == txref::MAGIC_BTC_TEST_EXTENDED);
+    assert(decodedResult.blockHeight == 10000);
+    assert(decodedResult.transactionPosition == 4);
+    assert(decodedResult.txoIndex == 6);
+    assert(decodedResult.encoding == txref::Bech32m);
 
 }
 

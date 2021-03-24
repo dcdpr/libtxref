@@ -2,7 +2,131 @@
 
 This is a library for converting between bitcoin transaction IDs (txid)
 and "Bech32 Encoded Tx Position References" (txref). Txrefs are
-described in [BIP 0136](https://github.com/veleslavs/bips/blob/txrev_v2/bip-0136.mediawiki).
+described in [BIP 0136](https://github.com/bitcoin/bips/blob/master/bip-0136.mediawiki).
+
+## Usage Examples
+
+### C++ Encoding Examples
+
+See [the full code for the following examples](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/cpp_example.cpp).
+
+#### Create a txref for a mainnet transaction, with only a blockHeight and transactionPosition:
+
+```cpp
+    int blockHeight = 10000;
+    int transactionPosition = 2;
+
+    std::string txref = txref::encode(blockHeight, transactionPosition);
+
+    assert(txref == "tx1:rq3n-qqzq-qk8k-mzd");
+```
+
+#### Create a txref for a testnet transaction, with only a blockHeight and transactionPosition:
+
+```cpp
+    int blockHeight = 10000;
+    int transactionPosition = 4;
+
+    std:string txref = txref::encodeTestnet(blockHeight, transactionPosition);
+
+    assert(txref == "txtest1:xq3n-qqyq-qhrg-gy3");
+```
+
+#### Create an extended txref for a mainnet transaction, with a blockHeight and transactionPosition and a specific txoIndex:
+
+```cpp
+    int blockHeight = 10000;
+    int transactionPosition = 2;
+    int txoIndex = 3;
+
+    std::string txref = txref::encode(blockHeight, transactionPosition, txoIndex);
+
+    assert(txref == "tx1:yq3n-qqzq-qrqq-9z4d-2n");
+```
+
+#### Create an extended txref for a testnet transaction, with a blockHeight and transactionPosition and a specific txoIndex
+
+```cpp
+    int blockHeight = 10000;
+    int transactionPosition  = 4;
+    int txoIndex = 6;
+
+    std::string txref = txref::encodeTestnet(blockHeight, transactionPosition, txoIndex);
+
+    assert(txref == "txtest1:8q3n-qqyq-qxqq-v3x4-ze");
+```
+
+### C++ Decoding Examples
+
+See [the full code for the following examples](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/cpp_example.cpp).
+
+#### Decode a txref
+
+```cpp
+    txref::DecodedResult decodedResult = txref::decode("tx1:yq3n-qqzq-qrqq-9z4d-2n");
+
+    assert(decodedResult.hrp == "tx");
+    assert(decodedResult.magicCode == txref::MAGIC_BTC_MAIN_EXTENDED);
+    assert(decodedResult.blockHeight == 10000);
+    assert(decodedResult.transactionPosition == 2);
+    assert(decodedResult.txoIndex == 3);
+    assert(decodedResult.encoding == txref::Bech32m);
+```
+
+#### Decode an "original" txref
+
+This txref has been encoded with the original bech32 internal constant. The
+decoding will still succeed, but the library will also return a commentary
+string that contains an explanatory message along with the txref that should
+be used instead.
+
+```cpp
+    txref::DecodedResult decodedResult = txref::decode("txtest1:xjk0-uqay-zat0-dz8");
+
+    assert(decodedResult.hrp == "txtest");
+    assert(decodedResult.magicCode == txref::MAGIC_BTC_TEST);
+    assert(decodedResult.blockHeight == 466793);
+    assert(decodedResult.transactionPosition == 2205);
+    assert(decodedResult.txoIndex == 0);
+    assert(decodedResult.encoding == txref::Bech32);
+
+    std::cout << decodedResult.getCommentary() << "\n";
+    // prints:
+    // "The txref txtest1:xjk0-uqay-zat0-dz8 uses an old encoding scheme and should be updated to txtest1:xjk0-uqay-zghl-p89 See https://github.com/dcdpr/libtxref#regarding-bech32-checksums for more information."
+```
+
+### C Encoding Example
+
+See [the full code for the following example](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/c_example.cpp).
+
+#### Create a txref for a mainnet transaction, with only a blockHeight and transactionPosition:
+
+```C
+    char main_hrp[] = "tx";
+    int blockHeight = 10000;
+    int transactionPosition = 2;
+    int txoIndex = 3;
+    char *txref = create_Txref_storage();
+    assert(txref_encode(txref, max_Txref_length(), blockHeight, transactionPosition, txoIndex,
+                        false, main_hrp, sizeof(main_hrp)) == E_TXREF_SUCCESS);
+    free_Txref_storage(txref);
+```
+
+### C Decoding Example
+
+See [the full code for the following example](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/c_example.cpp).
+
+#### Decode a txref
+
+```C
+    char *txref = create_Txref_storage();
+    strcpy(txref, "tx1:rq3n-qqzq-qk8k-mzd");
+    assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
+    assert(decodedResult->blockHeight == 10000);
+    assert(decodedResult->transactionPosition == 2);
+    assert(decodedResult->txoIndex == 0);
+    free_Txref_storage(txref);
+```
 
 ## Building libtxref
 
@@ -72,75 +196,19 @@ automatically initialize and update each submodule in the repository:
 git clone --recurse-submodules git@github.com:dcdpr/libtxref.git
 ```
 
-### C++ Usage Example
+## Regarding bech32 checksums
 
-```cpp
-#include "libtxref.h"
-#include <string>
-#include <iostream>
-#include <cassert>
+The Bech32 data encoding format was first proposed by Pieter Wuille in early 2017 in
+[BIP 0173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki). Later, in November 2019, Pieter published
+some research regarding that an exponent used in the bech32 checksum algorithm (value = 1) may not be
+optimal for the error detecting properties of bech32. In February 2021, Pieter published
+[BIP 0350](https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki) reporting that "exhaustive analysis" showed the best possible exponent value is
+0x2bc830a3. This improved variant of Bech32 is called "Bech32m".
 
-int main() {
+When decoding a txref, libtxref returns an enum value showing whether bech32m or bech32
+was used to encode. If the original bech32 variant is detected, libtxref also returns a
+commentary string that can be shown to the user. This commentary will contain a new txref that represents
+the same transaction data, but using the new bech32 variant. This can be seen in the examples above.
 
-    // encode: mainnet, extended txref example
+When encoding data, libtxref will only use the new exponent value of 0x2bc830a3.
 
-    int blockHeight = 10000;
-    int transactionPosition = 2;
-    int txoIndex = 3;
-
-    std::string txref = txref::encode(blockHeight, transactionPosition, txoIndex);
-
-    std::cout << "mainnet, extended txref for (blockHeight = 10000, transactionPosition=2, txoIndex=3):" << std::endl;
-    std::cout << txref << "\n\n";
-    assert(txref == "tx1:yq3n-qqzq-qrqq-0p67-s0");
-
-    // decode
-
-    txref::LocationData loc = txref::decode(txref);
-
-    assert(loc.hrp == "tx");
-    assert(loc.magicCode == txref::MAGIC_BTC_MAIN_EXTENDED);
-    assert(loc.blockHeight == 10000);
-    assert(loc.transactionPosition == 2);
-    assert(loc.txoIndex == 3);
-}
-```
-
-### C Usage Example
-
-```C
-#include "libtxref.h"
-#include <string.h>
-#include <stdio.h>
-#include <assert.h>
-
-int main() {
-    char main_hrp[] = "tx";
-
-    // encode: mainnet, extended txref example
-
-    int blockHeight = 10000;
-    int transactionPosition = 2;
-    int txoIndex = 3;
-
-    char *txref = create_Txref_storage();
-
-    assert(txref_encode(txref, max_Txref_length(), blockHeight, transactionPosition, txoIndex,
-                        false, main_hrp, sizeof(main_hrp)) == E_TXREF_SUCCESS);
-
-    printf("mainnet, extended txref for (blockHeight = 10000, transactionPosition=2, txoIndex=3):\n%s\n\n", txref);
-    assert(strcmp(txref, "tx1:yq3n-qqzq-qrqq-0p67-s0") == 0);
-
-    // decode
-
-    txref_LocationData *locationData = create_LocationData_storage();
-
-    assert(txref_decode(locationData, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
-    assert(locationData->blockHeight == 10000);
-    assert(locationData->transactionPosition == 2);
-    assert(locationData->txoIndex == 3);
-
-    free_LocationData_storage(locationData);
-    free_Txref_storage(txref);
-}
-```

@@ -59,10 +59,10 @@ void encode_mainnetExamples_areSuccessful() {
     };
 
     struct examples mainnet_examples[] = {
-            { 0, 0, 0, "tx1:rqqq-qqqq-qygr-lgl" },
-            { 0, 0x7FFF, 0, "tx1:rqqq-qqll-lceg-dfk" },
-            { 0xFFFFFF, 0x7FFF, 0, "tx1:r7ll-llll-lte5-das" },
-            { 466793, 2205, 0, "tx1:rjk0-uqay-z0u3-gl8" },
+            { 0, 0, 0, "tx1:rqqq-qqqq-qwtv-vjr" },
+            { 0, 0x7FFF, 0, "tx1:rqqq-qqll-lj68-7n2" },
+            { 0xFFFFFF, 0x7FFF, 0, "tx1:r7ll-llll-lp6m-78v" },
+            { 466793, 2205, 0, "tx1:rjk0-uqay-z9l7-m9m" },
     };
     int num_examples = sizeof(mainnet_examples) / sizeof(mainnet_examples[0]);
 
@@ -91,13 +91,13 @@ void encode_mainnetExtendedExamples_areSuccessful() {
     };
 
     struct examples mainnet_examples[] = {
-            { 0, 0, 100, "tx1:yqqq-qqqq-qyrq-sf0p-h4" },
-            { 0, 0, 0x1FFF, "tx1:yqqq-qqqq-qll8-7t5w-lr" },
-            { 0, 0x1FFF, 100, "tx1:yqqq-qqll-8yrq-9jpd-f9" },
-            { 0x1FFFFF, 0, 200, "tx1:y7ll-lrqq-qgxq-4j80-r2" },
-            { 0x1FFFFF, 0x1FFF, 0x1FFF, "tx1:y7ll-lrll-8ll8-vplh-nk" },
-            { 466793, 2205, 10, "tx1:yjk0-uqay-z2qq-fycf-mp" },
-            { 466793, 2205, 0x1FFF, "tx1:yjk0-uqay-zll8-25h5-aq" }
+            { 0, 0, 100, "tx1:yqqq-qqqq-qyrq-62qj-df" },
+            { 0, 0, 0x1FFF, "tx1:yqqq-qqqq-qll8-5gma-9l" },
+            { 0, 0x1FFF, 100, "tx1:yqqq-qqll-8yrq-03w7-ne" },
+            { 0x1FFFFF, 0, 200, "tx1:y7ll-lrqq-qgxq-l3gu-ek" },
+            { 0x1FFFFF, 0x1FFF, 0x1FFF, "tx1:y7ll-lrll-8ll8-xzsy-f2" },
+            { 466793, 2205, 10, "tx1:yjk0-uqay-z2qq-r8h6-pa" },
+            { 466793, 2205, 0x1FFF, "tx1:yjk0-uqay-zll8-qhc8-8u" }
     };
     int num_examples = sizeof(mainnet_examples) / sizeof(mainnet_examples[0]);
 
@@ -126,9 +126,9 @@ void encode_testnetExamples_areSuccessful() {
     };
 
     struct examples testnet_examples[] = {
-            { 0, 0, 0, "txtest1:xqqq-qqqq-qfqz-92p"},
-            { 0xFFFFFF, 0x7FFF, 0, "txtest1:x7ll-llll-lx34-hlw"},
-            { 467883, 2355, 0, "txtest1:xk63-uqnf-zz0k-3h7"},
+            { 0, 0, 0, "txtest1:xqqq-qqqq-qrrd-ksa"},
+            { 0xFFFFFF, 0x7FFF, 0, "txtest1:x7ll-llll-lvj6-y9j"},
+            { 467883, 2355, 0, "txtest1:xk63-uqnf-zgve-zdz"},
     };
     int num_examples = sizeof(testnet_examples) / sizeof(testnet_examples[0]);
 
@@ -157,12 +157,12 @@ void encode_testnetExtendedExamples_areSuccessful() {
     };
 
     struct examples testnet_examples[] = {
-            { 0, 0, 0x1FFF, "txtest1:8qqq-qqqq-qll8-snm9-uy" },
-            { 0, 0x7FFF, 100, "txtest1:8qqq-qqll-lyrq-ywmh-57" },
-            { 0xFFFFFF, 0, 200, "txtest1:87ll-llqq-qgxq-hlrz-n2" },
-            { 0xFFFFFF, 0x7FFF, 0x1FFF, "txtest1:87ll-llll-lll8-pgwt-a2" },
-            { 466793, 2205, 10, "txtest1:8jk0-uqay-z2qq-8uhz-cx" },
-            { 466793, 2205, 0x1FFF, "txtest1:8jk0-uqay-zll8-yvcl-78" }
+            { 0, 0, 0x1FFF, "txtest1:8qqq-qqqq-qll8-6s5k-xc" },
+            { 0, 0x7FFF, 100, "txtest1:8qqq-qqll-lyrq-wd5y-wz" },
+            { 0xFFFFFF, 0, 200, "txtest1:87ll-llqq-qgxq-auv3-fk" },
+            { 0xFFFFFF, 0x7FFF, 0x1FFF, "txtest1:87ll-llll-lll8-ttpc-8k" },
+            { 466793, 2205, 10, "txtest1:8jk0-uqay-z2qq-dlc3-z6" },
+            { 466793, 2205, 0x1FFF, "txtest1:8jk0-uqay-zll8-w0hv-ym" }
     };
     int num_examples = sizeof(testnet_examples) / sizeof(testnet_examples[0]);
 
@@ -194,8 +194,8 @@ void encode_AnyExamples_areSuccessful() {
 
     { // mainnet
         struct examples mainnet_examples[] = {
-                {466793, 2205, 0,  "tx1:rjk0-uqay-z0u3-gl8"},
-                {466793, 2205, 10, "tx1:yjk0-uqay-z2qq-fycf-mp"}
+                {466793, 2205, 0,  "tx1:rjk0-uqay-z9l7-m9m"},
+                {466793, 2205, 10, "tx1:yjk0-uqay-z2qq-r8h6-pa"}
         };
         int num_examples = sizeof(mainnet_examples) / sizeof(mainnet_examples[0]);
 
@@ -221,8 +221,8 @@ void encode_AnyExamples_areSuccessful() {
 
     { // testnet
         struct examples testnet_examples[] = {
-                {467883, 2355, 0,  "txtest1:xk63-uqnf-zz0k-3h7"},
-                {466793, 2205, 10, "txtest1:8jk0-uqay-z2qq-8uhz-cx"}
+                {467883, 2355, 0,  "txtest1:xk63-uqnf-zgve-zdz"},
+                {466793, 2205, 10, "txtest1:8jk0-uqay-z2qq-dlc3-z6"}
         };
         int num_examples = sizeof(testnet_examples) / sizeof(testnet_examples[0]);
 
@@ -255,27 +255,27 @@ void decode_withBadArgs_isUnsuccessful() {
     }
 
     { // input is null
-        txref_LocationData *locationData = create_LocationData_storage();
-        assert(txref_decode(locationData, NULL, 0) == E_TXREF_NULL_ARGUMENT);
-        free_LocationData_storage(locationData);
+        txref_DecodedResult *decodedResult = create_DecodedResult_storage();
+        assert(txref_decode(decodedResult, NULL, 0) == E_TXREF_NULL_ARGUMENT);
+        free_DecodedResult_storage(decodedResult);
     }
 
-    { // locationData->txref is null
+    { // decodedResult->txref is null
         char txref[] = "foo";
-        txref_LocationData *locationData = create_LocationData_storage();
-        free_Txref_storage(locationData->txref);
-        locationData->txref = NULL;
-        assert(txref_decode(locationData, txref, sizeof(txref)) == E_TXREF_NULL_ARGUMENT);
-        free_LocationData_storage(locationData);
+        txref_DecodedResult *decodedResult = create_DecodedResult_storage();
+        free_Txref_storage(decodedResult->txref);
+        decodedResult->txref = NULL;
+        assert(txref_decode(decodedResult, txref, sizeof(txref)) == E_TXREF_NULL_ARGUMENT);
+        free_DecodedResult_storage(decodedResult);
     }
 
-    { // locationData->hrp is null
+    { // decodedResult->hrp is null
         char txref[] = "foo";
-        txref_LocationData *locationData = create_LocationData_storage();
-        free(locationData->hrp);
-        locationData->hrp = NULL;
-        assert(txref_decode(locationData, txref, sizeof(txref)) == E_TXREF_NULL_ARGUMENT);
-        free_LocationData_storage(locationData);
+        txref_DecodedResult *decodedResult = create_DecodedResult_storage();
+        free(decodedResult->hrp);
+        decodedResult->hrp = NULL;
+        assert(txref_decode(decodedResult, txref, sizeof(txref)) == E_TXREF_NULL_ARGUMENT);
+        free_DecodedResult_storage(decodedResult);
     }
 }
 
@@ -284,9 +284,9 @@ void decode_whenMethodThrowsException_isUnsuccessful() {
     // with more than 83 chars and make sure that the exception thrown in the C++ code is caught
     // and returns an error code
     char txref[] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1qpzry9x8gf2tvdw0s3jn54khce6mua7lmqqqxw";
-    txref_LocationData *locationData = create_LocationData_storage();
-    assert(txref_decode(locationData, txref, sizeof(txref)) == E_TXREF_UNKNOWN_ERROR);
-    free_LocationData_storage(locationData);
+    txref_DecodedResult *decodedResult = create_DecodedResult_storage();
+    assert(txref_decode(decodedResult, txref, sizeof(txref)) == E_TXREF_UNKNOWN_ERROR);
+    free_DecodedResult_storage(decodedResult);
 }
 
 void decode_mainnetExamples_areSuccessful() {
@@ -298,32 +298,33 @@ void decode_mainnetExamples_areSuccessful() {
     };
 
     struct examples mainnet_examples[] = {
-            { "tx1:rqqq-qqqq-qygr-lgl", 0, 0, 0},
-            { "tx1:rqqq-qqll-lceg-dfk", 0, 0x7FFF, 0},
-            { "tx1:r7ll-llll-lte5-das", 0xFFFFFF, 0x7FFF, 0},
-            { "tx1:rjk0-uqay-z0u3-gl8", 466793, 2205, 0},
+            { "tx1:rqqq-qqqq-qwtv-vjr", 0, 0, 0},
+            { "tx1:rqqq-qqll-lj68-7n2", 0, 0x7FFF, 0},
+            { "tx1:r7ll-llll-lp6m-78v", 0xFFFFFF, 0x7FFF, 0},
+            { "tx1:rjk0-uqay-z9l7-m9m", 466793, 2205, 0},
     };
     int num_examples = sizeof(mainnet_examples) / sizeof(mainnet_examples[0]);
 
     for(int example_index = 0; example_index < num_examples; example_index++) {
         const char * txref = mainnet_examples[example_index].txref;
-        txref_LocationData *locationData =
-                (txref_LocationData *) calloc(1, sizeof(txref_LocationData));
-        locationData->txreflen = strlen(txref)+1;
-        locationData->txref = (char *) calloc(locationData->txreflen, 1);
-        locationData->hrplen = sizeof(hrp);
-        locationData->hrp = (char *) calloc(locationData->hrplen, 1);
+        txref_DecodedResult *decodedResult =
+                (txref_DecodedResult *) calloc(1, sizeof(txref_DecodedResult));
+        decodedResult->txreflen = strlen(txref)+1;
+        decodedResult->txref = (char *) calloc(decodedResult->txreflen, 1);
+        decodedResult->hrplen = sizeof(hrp);
+        decodedResult->hrp = (char *) calloc(decodedResult->hrplen, 1);
 
-        assert(txref_decode(locationData, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
-        assert(locationData->blockHeight == mainnet_examples[example_index].blockHeight);
-        assert(locationData->transactionPosition == mainnet_examples[example_index].transactionPosition);
-        assert(locationData->txoIndex == mainnet_examples[example_index].txoIndex);
-        assert(strcmp(locationData->txref, txref) == 0);
-        assert(strcmp(locationData->hrp, hrp) == 0);
+        assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
+        assert(decodedResult->blockHeight == mainnet_examples[example_index].blockHeight);
+        assert(decodedResult->transactionPosition == mainnet_examples[example_index].transactionPosition);
+        assert(decodedResult->txoIndex == mainnet_examples[example_index].txoIndex);
+        assert(strcmp(decodedResult->txref, txref) == 0);
+        assert(strcmp(decodedResult->hrp, hrp) == 0);
+        assert(decodedResult->encoding == BECH32M);
 
-        free(locationData->hrp);
-        free(locationData->txref);
-        free(locationData);
+        free(decodedResult->hrp);
+        free(decodedResult->txref);
+        free(decodedResult);
     }
 }
 
@@ -336,35 +337,36 @@ void decode_mainnetExtendedExamples_areSuccessful() {
     };
 
     struct examples mainnet_examples[] = {
-            { "tx1:yqqq-qqqq-qyrq-sf0p-h4", 0, 0, 100 },
-            { "tx1:yqqq-qqqq-qll8-7t5w-lr", 0, 0, 0x1FFF },
-            { "tx1:yqqq-qqll-8yrq-9jpd-f9", 0, 0x1FFF, 100 },
-            { "tx1:y7ll-lrqq-qgxq-4j80-r2", 0x1FFFFF, 0, 200 },
-            { "tx1:y7ll-lrll-8ll8-vplh-nk", 0x1FFFFF, 0x1FFF, 0x1FFF },
-            { "tx1:yjk0-uqay-z2qq-fycf-mp", 466793, 2205, 10 },
-            { "tx1:yjk0-uqay-zll8-25h5-aq", 466793, 2205, 0x1FFF }
+            { "tx1:yqqq-qqqq-qyrq-62qj-df", 0, 0, 100 },
+            { "tx1:yqqq-qqqq-qll8-5gma-9l", 0, 0, 0x1FFF },
+            { "tx1:yqqq-qqll-8yrq-03w7-ne", 0, 0x1FFF, 100 },
+            { "tx1:y7ll-lrqq-qgxq-l3gu-ek", 0x1FFFFF, 0, 200 },
+            { "tx1:y7ll-lrll-8ll8-xzsy-f2", 0x1FFFFF, 0x1FFF, 0x1FFF },
+            { "tx1:yjk0-uqay-z2qq-r8h6-pa", 466793, 2205, 10 },
+            { "tx1:yjk0-uqay-zll8-qhc8-8u", 466793, 2205, 0x1FFF }
     };
     int num_examples = sizeof(mainnet_examples) / sizeof(mainnet_examples[0]);
 
     for(int example_index = 0; example_index < num_examples; example_index++) {
         const char * txref = mainnet_examples[example_index].txref;
-        txref_LocationData *locationData =
-                (txref_LocationData *) calloc(1, sizeof(txref_LocationData));
-        locationData->txreflen = strlen(txref)+1;
-        locationData->txref = (char *) calloc(locationData->txreflen, 1);
-        locationData->hrplen = sizeof(hrp);
-        locationData->hrp = (char *) calloc(locationData->hrplen, 1);
+        txref_DecodedResult *decodedResult =
+                (txref_DecodedResult *) calloc(1, sizeof(txref_DecodedResult));
+        decodedResult->txreflen = strlen(txref)+1;
+        decodedResult->txref = (char *) calloc(decodedResult->txreflen, 1);
+        decodedResult->hrplen = sizeof(hrp);
+        decodedResult->hrp = (char *) calloc(decodedResult->hrplen, 1);
 
-        assert(txref_decode(locationData, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
-        assert(locationData->blockHeight == mainnet_examples[example_index].blockHeight);
-        assert(locationData->transactionPosition == mainnet_examples[example_index].transactionPosition);
-        assert(locationData->txoIndex == mainnet_examples[example_index].txoIndex);
-        assert(strcmp(locationData->txref, txref) == 0);
-        assert(strcmp(locationData->hrp, hrp) == 0);
+        assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
+        assert(decodedResult->blockHeight == mainnet_examples[example_index].blockHeight);
+        assert(decodedResult->transactionPosition == mainnet_examples[example_index].transactionPosition);
+        assert(decodedResult->txoIndex == mainnet_examples[example_index].txoIndex);
+        assert(strcmp(decodedResult->txref, txref) == 0);
+        assert(strcmp(decodedResult->hrp, hrp) == 0);
+        assert(decodedResult->encoding == BECH32M);
 
-        free(locationData->hrp);
-        free(locationData->txref);
-        free(locationData);
+        free(decodedResult->hrp);
+        free(decodedResult->txref);
+        free(decodedResult);
     }
 }
 
@@ -377,31 +379,32 @@ void decode_testnetExamples_areSuccessful() {
     };
 
     struct examples testnet_examples[] = {
-            { "txtest1:xqqq-qqqq-qfqz-92p", 0, 0, 0},
-            { "txtest1:x7ll-llll-lx34-hlw", 0xFFFFFF, 0x7FFF, 0},
-            { "txtest1:xk63-uqnf-zz0k-3h7", 467883, 2355, 0},
+            { "txtest1:xqqq-qqqq-qrrd-ksa", 0, 0, 0},
+            { "txtest1:x7ll-llll-lvj6-y9j", 0xFFFFFF, 0x7FFF, 0},
+            { "txtest1:xk63-uqnf-zgve-zdz", 467883, 2355, 0},
     };
     int num_examples = sizeof(testnet_examples) / sizeof(testnet_examples[0]);
 
     for(int example_index = 0; example_index < num_examples; example_index++) {
         const char * txref = testnet_examples[example_index].txref;
-        txref_LocationData *locationData =
-                (txref_LocationData *) calloc(1, sizeof(txref_LocationData));
-        locationData->txreflen = strlen(txref)+1;
-        locationData->txref = (char *) calloc(locationData->txreflen, 1);
-        locationData->hrplen = sizeof(hrp);
-        locationData->hrp = (char *) calloc(locationData->hrplen, 1);
+        txref_DecodedResult *decodedResult =
+                (txref_DecodedResult *) calloc(1, sizeof(txref_DecodedResult));
+        decodedResult->txreflen = strlen(txref)+1;
+        decodedResult->txref = (char *) calloc(decodedResult->txreflen, 1);
+        decodedResult->hrplen = sizeof(hrp);
+        decodedResult->hrp = (char *) calloc(decodedResult->hrplen, 1);
 
-        assert(txref_decode(locationData, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
-        assert(locationData->blockHeight == testnet_examples[example_index].blockHeight);
-        assert(locationData->transactionPosition == testnet_examples[example_index].transactionPosition);
-        assert(locationData->txoIndex == testnet_examples[example_index].txoIndex);
-        assert(strcmp(locationData->txref, txref) == 0);
-        assert(strcmp(locationData->hrp, hrp) == 0);
+        assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
+        assert(decodedResult->blockHeight == testnet_examples[example_index].blockHeight);
+        assert(decodedResult->transactionPosition == testnet_examples[example_index].transactionPosition);
+        assert(decodedResult->txoIndex == testnet_examples[example_index].txoIndex);
+        assert(strcmp(decodedResult->txref, txref) == 0);
+        assert(strcmp(decodedResult->hrp, hrp) == 0);
+        assert(decodedResult->encoding == BECH32M);
 
-        free(locationData->hrp);
-        free(locationData->txref);
-        free(locationData);
+        free(decodedResult->hrp);
+        free(decodedResult->txref);
+        free(decodedResult);
     }
 }
 
@@ -414,34 +417,35 @@ void decode_testnetExtendedExamples_areSuccessful() {
     };
 
     struct examples testnet_examples[] = {
-            { "txtest1:8qqq-qqqq-qll8-snm9-uy", 0, 0, 0x1FFF },
-            { "txtest1:8qqq-qqll-lyrq-ywmh-57", 0, 0x7FFF, 100, },
-            { "txtest1:87ll-llqq-qgxq-hlrz-n2", 0xFFFFFF, 0, 200 },
-            { "txtest1:87ll-llll-lll8-pgwt-a2", 0xFFFFFF, 0x7FFF, 0x1FFF },
-            { "txtest1:8jk0-uqay-z2qq-8uhz-cx", 466793, 2205, 10 },
-            { "txtest1:8jk0-uqay-zll8-yvcl-78", 466793, 2205, 0x1FFF }
+            { "txtest1:8qqq-qqqq-qll8-6s5k-xc", 0, 0, 0x1FFF },
+            { "txtest1:8qqq-qqll-lyrq-wd5y-wz", 0, 0x7FFF, 100, },
+            { "txtest1:87ll-llqq-qgxq-auv3-fk", 0xFFFFFF, 0, 200 },
+            { "txtest1:87ll-llll-lll8-ttpc-8k", 0xFFFFFF, 0x7FFF, 0x1FFF },
+            { "txtest1:8jk0-uqay-z2qq-dlc3-z6", 466793, 2205, 10 },
+            { "txtest1:8jk0-uqay-zll8-w0hv-ym", 466793, 2205, 0x1FFF }
     };
     int num_examples = sizeof(testnet_examples) / sizeof(testnet_examples[0]);
 
     for(int example_index = 0; example_index < num_examples; example_index++) {
         const char * txref = testnet_examples[example_index].txref;
-        txref_LocationData *locationData =
-                (txref_LocationData *) calloc(1, sizeof(txref_LocationData));
-        locationData->txreflen = strlen(txref)+1;
-        locationData->txref = (char *) calloc(locationData->txreflen, 1);
-        locationData->hrplen = sizeof(hrp);
-        locationData->hrp = (char *) calloc(locationData->hrplen, 1);
+        txref_DecodedResult *decodedResult =
+                (txref_DecodedResult *) calloc(1, sizeof(txref_DecodedResult));
+        decodedResult->txreflen = strlen(txref)+1;
+        decodedResult->txref = (char *) calloc(decodedResult->txreflen, 1);
+        decodedResult->hrplen = sizeof(hrp);
+        decodedResult->hrp = (char *) calloc(decodedResult->hrplen, 1);
 
-        assert(txref_decode(locationData, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
-        assert(locationData->blockHeight == testnet_examples[example_index].blockHeight);
-        assert(locationData->transactionPosition == testnet_examples[example_index].transactionPosition);
-        assert(locationData->txoIndex == testnet_examples[example_index].txoIndex);
-        assert(strcmp(locationData->txref, txref) == 0);
-        assert(strcmp(locationData->hrp, hrp) == 0);
+        assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
+        assert(decodedResult->blockHeight == testnet_examples[example_index].blockHeight);
+        assert(decodedResult->transactionPosition == testnet_examples[example_index].transactionPosition);
+        assert(decodedResult->txoIndex == testnet_examples[example_index].txoIndex);
+        assert(strcmp(decodedResult->txref, txref) == 0);
+        assert(strcmp(decodedResult->hrp, hrp) == 0);
+        assert(decodedResult->encoding == BECH32M);
 
-        free(locationData->hrp);
-        free(locationData->txref);
-        free(locationData);
+        free(decodedResult->hrp);
+        free(decodedResult->txref);
+        free(decodedResult);
     }
 }
 
@@ -457,8 +461,8 @@ void decode_AnyExtendedExamples_areSuccessful() {
 
     { // mainnet
         struct examples mainnet_examples[] = {
-                {"tx1:rjk0-uqay-z0u3-gl8",     466793, 2205, 0},
-                {"tx1:yjk0-uqay-z2qq-fycf-mp", 466793, 2205, 10}
+                {"tx1:rjk0-uqay-z9l7-m9m",     466793, 2205, 0},
+                {"tx1:yjk0-uqay-z2qq-r8h6-pa", 466793, 2205, 10}
         };
         int num_examples = sizeof(mainnet_examples) / sizeof(mainnet_examples[0]);
 
@@ -466,23 +470,24 @@ void decode_AnyExtendedExamples_areSuccessful() {
 
         for (int example_index = 0; example_index < num_examples; example_index++) {
             const char *txref = mainnet_examples[example_index].txref;
-            txref_LocationData *locationData = create_LocationData_storage();
+            txref_DecodedResult *decodedResult = create_DecodedResult_storage();
 
-            assert(txref_decode(locationData, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
-            assert(locationData->blockHeight == mainnet_examples[example_index].blockHeight);
-            assert(locationData->transactionPosition == mainnet_examples[example_index].transactionPosition);
-            assert(locationData->txoIndex == mainnet_examples[example_index].txoIndex);
-            assert(strcmp(locationData->txref, txref) == 0);
-            assert(strcmp(locationData->hrp, hrp) == 0);
+            assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
+            assert(decodedResult->blockHeight == mainnet_examples[example_index].blockHeight);
+            assert(decodedResult->transactionPosition == mainnet_examples[example_index].transactionPosition);
+            assert(decodedResult->txoIndex == mainnet_examples[example_index].txoIndex);
+            assert(strcmp(decodedResult->txref, txref) == 0);
+            assert(strcmp(decodedResult->hrp, hrp) == 0);
+            assert(decodedResult->encoding == BECH32M);
 
-            free_LocationData_storage(locationData);
+            free_DecodedResult_storage(decodedResult);
         }
     }
 
     { // testnet
         struct examples testnet_examples[] = {
-                {"txtest1:xk63-uqnf-zz0k-3h7",     467883, 2355, 0},
-                {"txtest1:8jk0-uqay-z2qq-8uhz-cx", 466793, 2205, 10}
+                {"txtest1:xk63-uqnf-zgve-zdz",     467883, 2355, 0},
+                {"txtest1:8jk0-uqay-z2qq-dlc3-z6", 466793, 2205, 10}
         };
         int num_examples = sizeof(testnet_examples) / sizeof(testnet_examples[0]);
 
@@ -490,18 +495,30 @@ void decode_AnyExtendedExamples_areSuccessful() {
 
         for (int example_index = 0; example_index < num_examples; example_index++) {
             const char *txref = testnet_examples[example_index].txref;
-            txref_LocationData *locationData = create_LocationData_storage();
+            txref_DecodedResult *decodedResult = create_DecodedResult_storage();
 
-            assert(txref_decode(locationData, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
-            assert(locationData->blockHeight == testnet_examples[example_index].blockHeight);
-            assert(locationData->transactionPosition == testnet_examples[example_index].transactionPosition);
-            assert(locationData->txoIndex == testnet_examples[example_index].txoIndex);
-            assert(strcmp(locationData->txref, txref) == 0);
-            assert(strcmp(locationData->hrp, hrp) == 0);
+            assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
+            assert(decodedResult->blockHeight == testnet_examples[example_index].blockHeight);
+            assert(decodedResult->transactionPosition == testnet_examples[example_index].transactionPosition);
+            assert(decodedResult->txoIndex == testnet_examples[example_index].txoIndex);
+            assert(strcmp(decodedResult->txref, txref) == 0);
+            assert(strcmp(decodedResult->hrp, hrp) == 0);
+            assert(decodedResult->encoding == BECH32M);
 
-            free_LocationData_storage(locationData);
+            free_DecodedResult_storage(decodedResult);
         }
     }
+}
+
+void decode_withOriginalChecksumConstant_hasCommentary() {
+    char txref[] = "txtest1:8jk0-uqay-zu4x-aw4h-zl";
+    txref_DecodedResult *decodedResult = create_DecodedResult_storage();
+
+    assert(txref_decode(decodedResult, txref, sizeof(txref)) == E_TXREF_SUCCESS);
+    assert(decodedResult->encoding == BECH32);
+    assert(strstr(decodedResult->commentary, "txtest1:8jk0-uqay-zu4x-gj9m-8a") != NULL);
+
+    free_DecodedResult_storage(decodedResult);
 }
 
 int main() {
@@ -524,6 +541,7 @@ int main() {
     decode_testnetExamples_areSuccessful();
     decode_testnetExtendedExamples_areSuccessful();
     decode_AnyExtendedExamples_areSuccessful();
+    decode_withOriginalChecksumConstant_hasCommentary();
 
     return 0;
 }

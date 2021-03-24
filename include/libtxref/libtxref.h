@@ -22,13 +22,22 @@ namespace txref {
     static const char colon = ':';
     static const char hyphen = '-';
 
-    struct LocationData {
+    // denotes which Bech32 encoding was used for the txref
+    enum Encoding {
+        Invalid, // no or invalid encoding was detected
+        Bech32,  // encoding used original checksum constant (1)
+        Bech32m  // encoding used default checksum constant (M = 0x2bc830a3)
+    };
+
+    struct DecodedResult {
         std::string hrp;
         std::string txref;
         int blockHeight = 0;
         int transactionPosition = 0;
         int txoIndex = 0;
         int magicCode = 0;
+        Encoding encoding = Encoding::Invalid;
+        std::string commentary;
     };
 
     // encodes the position of a confirmed bitcoin transaction on the
@@ -61,13 +70,13 @@ namespace txref {
 
     // decodes a bech32 encoded "transaction position reference" (txref) and
     // returns identifying data
-    LocationData decode(const std::string & txref);
+    DecodedResult decode(const std::string & txref);
 
 
-    enum InputParam { unknown_param, address_param, txid_param, txref_param, txrefext_param };
+    enum class InputParam { unknown, address, txid, txref, txrefext };
 
     // This function will determine if the input string is a Bitcoin address, txid,
-    // txref, or txrefext_param. This is not meant to be an exhaustive test--should only be
+    // txref, or txrefext. This is not meant to be an exhaustive test--should only be
     // used as a first pass to see what sort of string might be passed in as input.
     InputParam classifyInputString(const std::string & str);
 
@@ -106,7 +115,14 @@ namespace txref {
 extern "C" {
 #endif
 
-typedef struct txref_LocationData_s {
+typedef enum txref_encoding_e
+{
+    INVALID = 0,
+    BECH32,
+    BECH32M
+} txref_encoding;
+
+typedef struct txref_DecodedResult_s {
     char * hrp;
     size_t hrplen;
     char * txref;
@@ -115,8 +131,10 @@ typedef struct txref_LocationData_s {
     int transactionPosition;
     int txoIndex;
     int magicCode;
-} txref_LocationData;
-
+    txref_encoding encoding;
+    char *commentary;
+    size_t commentarylen;
+} txref_DecodedResult;
 
 typedef enum txref_error_e
 {
@@ -164,20 +182,20 @@ extern char * create_Txref_storage();
 extern void free_Txref_storage(char *txref);
 
 /**
- * Allocates memory for a txref_LocationData struct and returns a pointer.
+ * Allocates memory for a txref_DecodedResult struct and returns a pointer.
  *
  * This struct will be able to handle any size txref.
  *
- * This memory must be freed using the free_LocationData_storage function.
+ * This memory must be freed using the free_DecodedResult_storage function.
  *
- * @return a pointer to a new txref_LocationData struct, or NULL if error
+ * @return a pointer to a new txref_DecodedResult struct, or NULL if error
  */
-extern txref_LocationData * create_LocationData_storage();
+extern txref_DecodedResult * create_DecodedResult_storage();
 
 /**
- * Frees memory for a txref_LocationData struct.
+ * Frees memory for a txref_DecodedResult struct.
  */
-extern void free_LocationData_storage(txref_LocationData *locationData);
+extern void free_DecodedResult_storage(txref_DecodedResult *decodedResult);
 
 /**
  * encodes the position of a confirmed bitcoin transaction on the
@@ -239,14 +257,14 @@ extern txref_error txref_encodeTestnet(
  * decodes a bech32 encoded "transaction position reference" (txref) and
  * returns identifying data
  *
- * @param locationData pointer to struct to copy the decoded transaction data
+ * @param decodedResult pointer to struct to copy the decoded transaction data
  * @param txref the txref string to decode
  * @param txreflen the length of the txref string
  *
  * @return E_TXREF_SUCCESS on success, others on error
  */
 extern txref_error txref_decode(
-        txref_LocationData *locationData,
+        txref_DecodedResult *decodedResult,
         const char * txref,
         size_t txreflen);
 

@@ -18,15 +18,15 @@ int main() {
 
     std::cout << "mainnet, extended txref for (blockHeight = 10000, transactionPosition=2, txoIndex=3):" << std::endl;
     std::cout << txref << "\n\n";
-    assert(txref == "tx1:yq3n-qqzq-qrqq-0p67-s0");
+    assert(txref == "tx1:yq3n-qqzq-qrqq-9z4d-2n");
 
     // decode
 
-    txref::LocationData loc = txref::decode(txref);
+    txref::DecodedResult decodedResult = txref::decode(txref);
 
-    assert(loc.hrp == "tx");
-    assert(loc.magicCode == txref::MAGIC_BTC_MAIN_EXTENDED);
-    assert(loc.blockHeight == 10000);
-    assert(loc.transactionPosition == 2);
-    assert(loc.txoIndex == 3);
+    assert(decodedResult.hrp == "tx");
+    assert(decodedResult.magicCode == txref::MAGIC_BTC_MAIN_EXTENDED);
+    assert(decodedResult.blockHeight == 10000);
+    assert(decodedResult.transactionPosition == 2);
+    assert(decodedResult.txoIndex == 3);
 }
