@@ -567,11 +567,15 @@ TEST(TxrefTest, txref_encode_bip_examples) {
     EXPECT_EQ(txrefEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN, 0, 0),
               "tx1:rqqq-qqqq-qwtv-vjr");
 
-    // Transaction #2205 of Block #466793:
-    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN, 466793, 2205),
-              "tx1:rjk0-uqay-z9l7-m9m");
+    // Transaction #1 of Block #170:
+    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN, 170, 1),
+              "tx1:r52q-qqpq-qpty-cfg");
 
-    // The following list gives properly encoded Bitcoin mainnet TxRef's
+    // Transaction #1234 of Block #456789, with outpoint 1:
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN_EXTENDED, 456789, 1234, 1),
+              "tx1:y29u-mqjx-ppqq-sfp2-tt");
+
+    // The following list gives properly encoded mainnet TxRef's
     EXPECT_EQ(txrefEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN, 0, 0),
               "tx1:rqqq-qqqq-qwtv-vjr");
     EXPECT_EQ(txrefEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN, 0, 0x7FFF),
@@ -581,7 +585,7 @@ TEST(TxrefTest, txref_encode_bip_examples) {
     EXPECT_EQ(txrefEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN, 0xFFFFFF, 0x7FFF),
               "tx1:r7ll-llll-lp6m-78v");
 
-    // The following list gives properly encoded Bitcoin testnet TxRef's
+    // The following list gives properly encoded testnet TxRef's
     EXPECT_EQ(txrefEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST, 0, 0),
               "txtest1:xqqq-qqqq-qrrd-ksa");
     EXPECT_EQ(txrefEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST, 0, 0x7FFF),
@@ -591,11 +595,11 @@ TEST(TxrefTest, txref_encode_bip_examples) {
     EXPECT_EQ(txrefEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST, 0xFFFFFF, 0x7FFF),
               "txtest1:x7ll-llll-lvj6-y9j");
 
-    // The following list gives valid (though strangely formatted) Bitcoin TxRef's
-    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN, 0x71F69, 0x89D),
-              "tx1:rjk0-uqay-z9l7-m9m");
+    // The following list gives valid (sometimes strangely formatted) TxRef's
+    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN, 456789, 1234),
+              "tx1:r29u-mqjx-putt-3p0");
 
-    // The following list gives properly encoded Bitcoin mainnet TxRef's with Outpoints
+    // The following list gives properly encoded mainnet TxRef's with Outpoints
     EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN_EXTENDED, 0, 0, 0),
               "tx1:yqqq-qqqq-qqqq-rvum-0c");
     EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN_EXTENDED, 0, 0x7FFF, 0),
@@ -614,12 +618,10 @@ TEST(TxrefTest, txref_encode_bip_examples) {
     EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN_EXTENDED, 0xFFFFFF, 0x7FFF, 1),
               "tx1:y7ll-llll-lpqq-s4qz-hw");
 
-    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN_EXTENDED, 0x71F69, 0x89D, 0x123),
-              "tx1:yjk0-uqay-zrfq-akgy-w9");
-    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN_EXTENDED, 0x71F69, 0x89D, 0x1ABC),
-              "tx1:yjk0-uqay-zu4x-x22s-y6");
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_MAIN, txref::MAGIC_BTC_MAIN_EXTENDED, 456789, 1234, 1),
+              "tx1:y29u-mqjx-ppqq-sfp2-tt");
 
-    // The following list gives properly encoded Bitcoin testnet TxRef's with Outpoints
+    // The following list gives properly encoded testnet TxRef's with Outpoints
     EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST_EXTENDED, 0, 0, 0),
               "txtest1:8qqq-qqqq-qqqq-d5ns-vl");
     EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST_EXTENDED, 0, 0x7FFF, 0),
@@ -638,10 +640,8 @@ TEST(TxrefTest, txref_encode_bip_examples) {
     EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST_EXTENDED, 0xFFFFFF, 0x7FFF, 1),
               "txtest1:87ll-llll-lpqq-7d0f-5f");
 
-    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST_EXTENDED, 0x71F69, 0x89D, 0x123),
-              "txtest1:8jk0-uqay-zrfq-nw80-dz");
-    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST_EXTENDED, 0x71F69, 0x89D, 0x1ABC),
-              "txtest1:8jk0-uqay-zu4x-gj9m-8a");
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST_EXTENDED, 456789, 1234, 1),
+              "txtest1:829u-mqjx-ppqq-73wp-gv");
 }
 
 TEST(TxrefTest, txref_decode_bip_examples) {
@@ -656,15 +656,21 @@ TEST(TxrefTest, txref_decode_bip_examples) {
     RC_ASSERT(decodedResult.blockHeight == height);
     RC_ASSERT(decodedResult.transactionPosition == pos);
 
-
-    // Transaction #2205 of Block #466793:
-    height = 466793; pos = 2205; txref = "tx1:rjk0-uqay-z9l7-m9m";
+    // Transaction #1 of Block #170:
+    height = 170; pos = 1; txref = "tx1:r52q‑qqpq‑qpty‑cfg";
     decodedResult = txref::decode(txref);
     RC_ASSERT(decodedResult.blockHeight == height);
     RC_ASSERT(decodedResult.transactionPosition == pos);
 
+    // Transaction #1234 of Block #456789 with outpoint 1:
+    height = 456789; pos = 1234; txoIndex = 1; txref = "tx1:y29u‑mqjx‑ppqq‑sfp2‑tt";
+    decodedResult = txref::decode(txref);
+    RC_ASSERT(decodedResult.blockHeight == height);
+    RC_ASSERT(decodedResult.transactionPosition == pos);
+    RC_ASSERT(decodedResult.txoIndex == txoIndex);
 
-    // The following list gives properly encoded Bitcoin mainnet TxRef's
+
+    // The following list gives properly encoded mainnet TxRef's
     height = 0; pos = 0; txref = "tx1:rqqq-qqqq-qwtv-vjr";
     decodedResult = txref::decode(txref);
     RC_ASSERT(decodedResult.blockHeight == height);
@@ -686,7 +692,7 @@ TEST(TxrefTest, txref_decode_bip_examples) {
     RC_ASSERT(decodedResult.transactionPosition == pos);
 
 
-    // The following list gives properly encoded Bitcoin testnet TxRef's
+    // The following list gives properly encoded testnet TxRef's
     height = 0; pos = 0; txref = "txtest1:xqqq-qqqq-qrrd-ksa";
     decodedResult = txref::decode(txref);
     RC_ASSERT(decodedResult.blockHeight == height);
@@ -708,14 +714,33 @@ TEST(TxrefTest, txref_decode_bip_examples) {
     RC_ASSERT(decodedResult.transactionPosition == pos);
 
 
-    // The following list gives valid (though strangely formatted) Bitcoin TxRef's
-    height = 0x71F69; pos = 0x89D; txref = "tx1:rjk0-uqay-z9l7-m9m";
+    // The following list gives valid (sometimes strangely formatted) TxRef's
+    height = 456789; pos = 1234; txref = "tx1:r29u-mqjx-putt-3p0";
     decodedResult = txref::decode(txref);
     RC_ASSERT(decodedResult.blockHeight == height);
     RC_ASSERT(decodedResult.transactionPosition == pos);
 
+    txref = "TX1R29UMQJXPUTT3P0";
+    decodedResult = txref::decode(txref);
+    RC_ASSERT(decodedResult.blockHeight == height);
+    RC_ASSERT(decodedResult.transactionPosition == pos);
 
-    // The following list gives properly encoded Bitcoin mainnet TxRef's with Outpoints
+    txref = "TX1R29umqJX--PUTT----3P0";
+    decodedResult = txref::decode(txref);
+    RC_ASSERT(decodedResult.blockHeight == height);
+    RC_ASSERT(decodedResult.transactionPosition == pos);
+
+    txref = "tx1 r29u mqjx putt 3p0";
+    decodedResult = txref::decode(txref);
+    RC_ASSERT(decodedResult.blockHeight == height);
+    RC_ASSERT(decodedResult.transactionPosition == pos);
+
+    txref = "tx1!r29u/mqj*x-putt^^3p0";
+    decodedResult = txref::decode(txref);
+    RC_ASSERT(decodedResult.blockHeight == height);
+    RC_ASSERT(decodedResult.transactionPosition == pos);
+
+    // The following list gives properly encoded mainnet TxRef's with Outpoints
     height = 0; pos = 0; txoIndex = 0; txref = "tx1:yqqq-qqqq-qqqq-rvum-0c";
     decodedResult = txref::decode(txref);
     RC_ASSERT(decodedResult.blockHeight == height);
@@ -766,20 +791,14 @@ TEST(TxrefTest, txref_decode_bip_examples) {
     RC_ASSERT(decodedResult.txoIndex == txoIndex);
 
 
-    height = 0x71F69; pos = 0x89D; txoIndex = 0x123; txref = "tx1:yjk0-uqay-zrfq-akgy-w9";
-    decodedResult = txref::decode(txref);
-    RC_ASSERT(decodedResult.blockHeight == height);
-    RC_ASSERT(decodedResult.transactionPosition == pos);
-    RC_ASSERT(decodedResult.txoIndex == txoIndex);
-
-    height = 0x71F69; pos = 0x89D; txoIndex = 0x1ABC; txref = "tx1:yjk0-uqay-zu4x-x22s-y6";
+    height = 456789; pos = 1234; txoIndex = 1; txref = "tx1:y29u-mqjx-ppqq-sfp2-tt";
     decodedResult = txref::decode(txref);
     RC_ASSERT(decodedResult.blockHeight == height);
     RC_ASSERT(decodedResult.transactionPosition == pos);
     RC_ASSERT(decodedResult.txoIndex == txoIndex);
 
 
-    // The following list gives properly encoded Bitcoin testnet TxRef's with Outpoints
+    // The following list gives properly encoded testnet TxRef's with Outpoints
     height = 0; pos = 0; txoIndex = 0; txref = "txtest1:8qqq-qqqq-qqqq-d5ns-vl";
     decodedResult = txref::decode(txref);
     RC_ASSERT(decodedResult.blockHeight == height);
@@ -830,13 +849,7 @@ TEST(TxrefTest, txref_decode_bip_examples) {
     RC_ASSERT(decodedResult.txoIndex == txoIndex);
 
 
-    height = 0x71F69; pos = 0x89D; txoIndex = 0x123; txref = "txtest1:8jk0-uqay-zrfq-nw80-dz";
-    decodedResult = txref::decode(txref);
-    RC_ASSERT(decodedResult.blockHeight == height);
-    RC_ASSERT(decodedResult.transactionPosition == pos);
-    RC_ASSERT(decodedResult.txoIndex == txoIndex);
-
-    height = 0x71F69; pos = 0x89D; txoIndex = 0x1ABC; txref = "txtest1:8jk0-uqay-zu4x-gj9m-8a";
+    height = 456789; pos = 1234; txoIndex = 1; txref = "txtest1:829u-mqjx-ppqq-73wp-gv";
     decodedResult = txref::decode(txref);
     RC_ASSERT(decodedResult.blockHeight == height);
     RC_ASSERT(decodedResult.transactionPosition == pos);

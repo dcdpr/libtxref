@@ -223,6 +223,12 @@ namespace {
         return txref;
     }
 
+    // upper-case or mixed-case txrefs will fail bech32 decoding, so we should lower-case if needed.
+    std::string convertToLowercase(const std::string & txref) {
+        std::string str = txref;
+        std::transform(str.begin(), str.end(), str.begin(), &::tolower);
+        return str;
+    }
 
     std::string txrefEncode(
             const std::string &hrp,
@@ -384,6 +390,7 @@ namespace txref {
     DecodedResult decode(const std::string & txref) {
 
         std::string txrefClean = bech32::stripUnknownChars(txref);
+        txrefClean = convertToLowercase(txrefClean);
         txrefClean = addHrpIfNeeded(txrefClean);
         bech32::DecodedResult bech32DecodedResult = bech32::decode(txrefClean);
 
