@@ -182,6 +182,66 @@ void encode_testnetExtendedExamples_areSuccessful() {
     }
 }
 
+void encode_regtestExamples_areSuccessful() {
+    char hrp[] = "txrt";
+
+    struct examples {
+        int blockHeight, transactionPosition, txoIndex;
+        const char *txref;
+    };
+
+    struct examples regtest_examples[] = {
+            { 0, 0, 0, "txrt1:qqqq-qqqq-qwpz-nyw"},
+            { 0xFFFFFF, 0x7FFF, 0, "txrt1:q7ll-llll-lps4-p3p"},
+    };
+    int num_examples = sizeof(regtest_examples) / sizeof(regtest_examples[0]);
+
+    for(int example_index = 0; example_index < num_examples; example_index++) {
+        const char *expectedTxref = regtest_examples[example_index].txref;
+        const size_t expectedTxrefSize = strlen(expectedTxref)+1; // 27 = 15 data chars + 1 ':' + 3 '-' + 'txrt1' + '\0';
+        char *txref = (char *) calloc(expectedTxrefSize, 1);
+
+        assert(txref_encodeRegtest(
+                txref, expectedTxrefSize,
+                regtest_examples[example_index].blockHeight,
+                regtest_examples[example_index].transactionPosition,
+                regtest_examples[example_index].txoIndex, false, hrp, sizeof(hrp)) == E_TXREF_SUCCESS);
+        assert(strcmp(txref, expectedTxref) == 0);
+
+        free(txref);
+    }
+}
+
+void encode_regtestExtendedExamples_areSuccessful() {
+    char hrp[] = "txrt";
+
+    struct examples {
+        int blockHeight, transactionPosition, txoIndex;
+        const char *txref;
+    };
+
+    struct examples regtest_examples[] = {
+            { 0, 0, 100, "txrt1:pqqq-qqqq-qyrq-2z0a-kx" },
+            { 0, 0, 0x1FFF, "txrt1:pqqq-qqqq-qll8-yq5j-7s" },
+    };
+    int num_examples = sizeof(regtest_examples) / sizeof(regtest_examples[0]);
+
+    for(int example_index = 0; example_index < num_examples; example_index++) {
+        const char *expectedTxref = regtest_examples[example_index].txref;
+        const size_t expectedTxrefSize = strlen(expectedTxref)+1; // 31 = 18 data chars + 1 ':' + 4 '-' + 'txrt1' + '\0';
+        char *txref = (char *) calloc(expectedTxrefSize, 1);
+
+        assert(txref_encodeRegtest(
+                txref, expectedTxrefSize,
+                regtest_examples[example_index].blockHeight,
+                regtest_examples[example_index].transactionPosition,
+                regtest_examples[example_index].txoIndex, false, hrp, sizeof(hrp)) == E_TXREF_SUCCESS);
+        assert(strcmp(txref, expectedTxref) == 0);
+
+        free(txref);
+    }
+}
+
 void encode_AnyExamples_areSuccessful() {
     // this test function repeats some encoding tests above, but here we are testing that
     // the storage allocation functions are able to allocate enough memory to safely handle
@@ -449,6 +509,80 @@ void decode_testnetExtendedExamples_areSuccessful() {
     }
 }
 
+void decode_regtestExamples_areSuccessful() {
+    char hrp[] = "txrt";
+
+    struct examples {
+        const char *txref;
+        int blockHeight, transactionPosition, txoIndex;
+    };
+
+    struct examples regtest_examples[] = {
+            { "txrt1:qqqq-qqqq-qwpz-nyw", 0, 0, 0},
+            { "txrt1:q7ll-llll-lps4-p3p", 0xFFFFFF, 0x7FFF, 0},
+    };
+    int num_examples = sizeof(regtest_examples) / sizeof(regtest_examples[0]);
+
+    for(int example_index = 0; example_index < num_examples; example_index++) {
+        const char * txref = regtest_examples[example_index].txref;
+        txref_DecodedResult *decodedResult =
+                (txref_DecodedResult *) calloc(1, sizeof(txref_DecodedResult));
+        decodedResult->txreflen = strlen(txref)+1;
+        decodedResult->txref = (char *) calloc(decodedResult->txreflen, 1);
+        decodedResult->hrplen = sizeof(hrp);
+        decodedResult->hrp = (char *) calloc(decodedResult->hrplen, 1);
+
+        assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
+        assert(decodedResult->blockHeight == regtest_examples[example_index].blockHeight);
+        assert(decodedResult->transactionPosition == regtest_examples[example_index].transactionPosition);
+        assert(decodedResult->txoIndex == regtest_examples[example_index].txoIndex);
+        assert(strcmp(decodedResult->txref, txref) == 0);
+        assert(strcmp(decodedResult->hrp, hrp) == 0);
+        assert(decodedResult->encoding == BECH32M);
+
+        free(decodedResult->hrp);
+        free(decodedResult->txref);
+        free(decodedResult);
+    }
+}
+
+void decode_regtestExtendedExamples_areSuccessful() {
+    char hrp[] = "txrt";
+
+    struct examples {
+        const char *txref;
+        int blockHeight, transactionPosition, txoIndex;
+    };
+
+    struct examples testnet_examples[] = {
+            { "txrt1:pqqq-qqqq-qyrq-2z0a-kx", 0, 0, 100 },
+            { "txrt1:pqqq-qqqq-qll8-yq5j-7s", 0, 0, 0x1FFF },
+    };
+    int num_examples = sizeof(testnet_examples) / sizeof(testnet_examples[0]);
+
+    for(int example_index = 0; example_index < num_examples; example_index++) {
+        const char * txref = testnet_examples[example_index].txref;
+        txref_DecodedResult *decodedResult =
+                (txref_DecodedResult *) calloc(1, sizeof(txref_DecodedResult));
+        decodedResult->txreflen = strlen(txref)+1;
+        decodedResult->txref = (char *) calloc(decodedResult->txreflen, 1);
+        decodedResult->hrplen = sizeof(hrp);
+        decodedResult->hrp = (char *) calloc(decodedResult->hrplen, 1);
+
+        assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
+        assert(decodedResult->blockHeight == testnet_examples[example_index].blockHeight);
+        assert(decodedResult->transactionPosition == testnet_examples[example_index].transactionPosition);
+        assert(decodedResult->txoIndex == testnet_examples[example_index].txoIndex);
+        assert(strcmp(decodedResult->txref, txref) == 0);
+        assert(strcmp(decodedResult->hrp, hrp) == 0);
+        assert(decodedResult->encoding == BECH32M);
+
+        free(decodedResult->hrp);
+        free(decodedResult->txref);
+        free(decodedResult);
+    }
+}
+
 void decode_AnyExtendedExamples_areSuccessful() {
     // this test function repeats some decoding tests above, but here we are testing that
     // the storage allocation functions are able to allocate enough memory to safely handle
@@ -532,6 +666,8 @@ int main() {
     encode_mainnetExtendedExamples_areSuccessful();
     encode_testnetExamples_areSuccessful();
     encode_testnetExtendedExamples_areSuccessful();
+    encode_regtestExamples_areSuccessful();
+    encode_regtestExtendedExamples_areSuccessful();
     encode_AnyExamples_areSuccessful();
 
     decode_withBadArgs_isUnsuccessful();
@@ -540,6 +676,8 @@ int main() {
     decode_mainnetExtendedExamples_areSuccessful();
     decode_testnetExamples_areSuccessful();
     decode_testnetExtendedExamples_areSuccessful();
+    decode_regtestExamples_areSuccessful();
+    decode_regtestExtendedExamples_areSuccessful();
     decode_AnyExtendedExamples_areSuccessful();
     decode_withOriginalChecksumConstant_hasCommentary();
 
