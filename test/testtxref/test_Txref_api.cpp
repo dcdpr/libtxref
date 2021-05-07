@@ -187,7 +187,7 @@ TEST(TxrefApiTest, txref_decode_check_encoding) {
 
 }
 
-TEST(TxrefApiTest, txref_decode_check_commentary) {
+TEST(TxrefApiTest, txref_decode_check_commentary_old_encoding) {
     std::string txref;
     txref::DecodedResult decodedResult;
 
@@ -199,7 +199,16 @@ TEST(TxrefApiTest, txref_decode_check_commentary) {
     decodedResult = txref::decode(txref);
     EXPECT_NE(decodedResult.commentary, "");
     EXPECT_TRUE(decodedResult.commentary.find("txtest1:8jk0-uqay-zu4x-gj9m-8a") != std::string::npos);
+}
 
+TEST(TxrefApiTest, txref_decode_check_commentary_mixedcase) {
+    std::string txref;
+    txref::DecodedResult decodedResult;
+
+    txref = "txtest1:8jk0-uQay-zu4x-gj9m-8a";
+    decodedResult = txref::decode(txref);
+    EXPECT_NE(decodedResult.commentary, "");
+    EXPECT_TRUE(decodedResult.commentary.find("txtest1:8jk0-uqay-zu4x-gj9m-8a") != std::string::npos);
 }
 
 //check that we correctly decode extended txrefs even with missing HRPs and weird formatting

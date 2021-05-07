@@ -920,4 +920,25 @@ TEST(ClassifyInputStringTest, test_txrefext) {
     EXPECT_EQ(classifyInputString("8jk0uqayzu4xaw4hzl"), InputParam::txrefext);
 }
 
+TEST(TxrefTest, containsUppercaseCharacters) {
+    EXPECT_FALSE(cleanTxrefContainsUppercaseCharacters("test"));
+    EXPECT_TRUE(cleanTxrefContainsUppercaseCharacters("TEST"));
+    EXPECT_TRUE(cleanTxrefContainsUppercaseCharacters("Test"));
+    EXPECT_FALSE(cleanTxrefContainsUppercaseCharacters("123abc"));
+}
 
+TEST(TxrefTest, containsLowercaseCharacters) {
+    EXPECT_TRUE(cleanTxrefContainsLowercaseCharacters("test"));
+    EXPECT_FALSE(cleanTxrefContainsLowercaseCharacters("TEST"));
+    EXPECT_TRUE(cleanTxrefContainsLowercaseCharacters("Test"));
+    EXPECT_FALSE(cleanTxrefContainsLowercaseCharacters("123ABC"));
+}
+
+TEST(TxrefTest, containsMixedcaseCharacters) {
+    EXPECT_FALSE(cleanTxrefContainsMixedcaseCharacters("test"));
+    EXPECT_FALSE(cleanTxrefContainsMixedcaseCharacters("TEST"));
+    EXPECT_TRUE(cleanTxrefContainsMixedcaseCharacters("Test"));
+    EXPECT_FALSE(cleanTxrefContainsMixedcaseCharacters("123"));
+    EXPECT_FALSE(cleanTxrefContainsMixedcaseCharacters("123a"));
+    EXPECT_TRUE(cleanTxrefContainsMixedcaseCharacters("A123a"));
+}

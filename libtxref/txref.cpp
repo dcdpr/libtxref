@@ -230,6 +230,28 @@ namespace {
         return str;
     }
 
+    // returns true if cleaned txref contains upper-case characters. "cleaned" means that the
+    // txref has already been processed by bech32::stripUnknownChars() and only contains alpha-numeric
+    // characters from the valid bech32 charset.
+    bool cleanTxrefContainsUppercaseCharacters(const std::string & txref) {
+        return std::any_of(txref.begin(), txref.end(), &::isupper);
+    }
+
+    // returns true if cleaned txref contains lower-case characters. "cleaned" means that the
+    // txref has already been processed by bech32::stripUnknownChars() and only contains alpha-numeric
+    // characters from the valid bech32 charset.
+    bool cleanTxrefContainsLowercaseCharacters(const std::string & txref) {
+        return std::any_of(txref.begin(), txref.end(), &::islower);
+    }
+
+    // returns true if cleaned txref contains mixed-case characters. "cleaned" means that the
+    // txref has already been processed by bech32::stripUnknownChars() and only contains alpha-numeric
+    // characters from the valid bech32 charset.
+    bool cleanTxrefContainsMixedcaseCharacters(const std::string & txref) {
+        return cleanTxrefContainsLowercaseCharacters(txref) &&
+               cleanTxrefContainsUppercaseCharacters(txref);
+    }
+
     std::string txrefEncode(
             const std::string &hrp,
             int magicCode,
@@ -389,8 +411,14 @@ namespace txref {
 
     DecodedResult decode(const std::string & txref) {
 
+        std::string runningCommentary;
         std::string txrefClean = bech32::stripUnknownChars(txref);
-        txrefClean = convertToLowercase(txrefClean);
+        if(cleanTxrefContainsMixedcaseCharacters(txrefClean)) {
+            txrefClean = convertToLowercase(txrefClean);
+            runningCommentary += txref + " contains mixed-case characters, which is "
+                                         "forbidden by the Bech32 spec. Please use ";
+            runningCommentary += convertToLowercase(txref) + " instead. ";
+        }
         txrefClean = addHrpIfNeeded(txrefClean);
         bech32::DecodedResult bech32DecodedResult = bech32::decode(txrefClean);
 
@@ -427,10 +455,12 @@ namespace txref {
             else {
                 updatedTxref = txrefEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionPosition);
             }
-            result.commentary = "The txref " + result.txref +
-                                " uses an old encoding scheme and should be updated to " + updatedTxref +
-                                " See https://github.com/dcdpr/libtxref#regarding-bech32-checksums for more information.";
+            runningCommentary += "The txref " + result.txref +
+                                 " uses an old encoding scheme and should be updated to " + updatedTxref +
+                                 " See https://github.com/dcdpr/libtxref#regarding-bech32-checksums for more information.";
         }
+        if(!runningCommentary.empty())
+            result.commentary = runningCommentary;
 
         return result;
     }
