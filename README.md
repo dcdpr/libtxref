@@ -182,7 +182,7 @@ Now you can again try to build libtxref.
 If you got this code by cloning the github repo:
 
 ```
-git clone git@github.com:dcdpr/libtxref.git
+git clone https://github.com/dcdpr/libtxref.git
 ```
 
 then you will need to do a few extra steps to make sure you have everything:
@@ -198,7 +198,7 @@ you pass --recurse-submodules to the git clone command, it will
 automatically initialize and update each submodule in the repository:
 
 ```
-git clone --recurse-submodules git@github.com:dcdpr/libtxref.git
+git clone --recurse-submodules https://github.com/dcdpr/libtxref.git
 ```
 
 ## Regarding bech32 checksums
