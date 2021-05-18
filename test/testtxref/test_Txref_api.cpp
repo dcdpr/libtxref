@@ -13,7 +13,7 @@
 
 // In this "API" test file, we should only be referring to symbols in the "txref" namespace.
 
-//check that we correctly decode txrefs for both main and testnet
+//check that we correctly decode txrefs for mainnet, testnet and regtest
 TEST(TxrefApiTest, txref_decode) {
     std::string txref;
     txref::DecodedResult decodedResult;
@@ -64,6 +64,14 @@ TEST(TxrefApiTest, txref_decode) {
     EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_TEST);
     EXPECT_EQ(decodedResult.blockHeight, 466793);
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
+    EXPECT_EQ(decodedResult.txoIndex, 0);
+
+    txref = "txrt1:q7ll-llll-lps4-p3p";
+    decodedResult = txref::decode(txref);
+    EXPECT_EQ(decodedResult.hrp, "txrt");
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_REGTEST);
+    EXPECT_EQ(decodedResult.blockHeight, 0xFFFFFF);
+    EXPECT_EQ(decodedResult.transactionPosition, 0x7FFF);
     EXPECT_EQ(decodedResult.txoIndex, 0);
 }
 
@@ -132,10 +140,19 @@ TEST(TxrefApiTest, txref_decode_no_HRPs) {
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
     EXPECT_EQ(decodedResult.txoIndex, 0);
     EXPECT_EQ(decodedResult.txref, "txtest1:xjk0-uqay-zghl-p89");
+
+    txref = "q7ll-llll-lps4-p3p";
+    decodedResult = txref::decode(txref);
+    EXPECT_EQ(decodedResult.hrp, "txrt");
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_REGTEST);
+    EXPECT_EQ(decodedResult.blockHeight, 0xFFFFFF);
+    EXPECT_EQ(decodedResult.transactionPosition, 0x7FFF);
+    EXPECT_EQ(decodedResult.txoIndex, 0);
+    EXPECT_EQ(decodedResult.txref, "txrt1:q7ll-llll-lps4-p3p");
 }
 
 
-// check that we correctly decode extended txrefs for both main and testnet
+// check that we correctly decode extended txrefs for mainnet, testnet and regtest
 TEST(TxrefApiTest, txref_extended_decode) {
     std::string txref;
     txref::DecodedResult decodedResult;
@@ -171,6 +188,14 @@ TEST(TxrefApiTest, txref_extended_decode) {
     EXPECT_EQ(decodedResult.blockHeight, 466793);
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
     EXPECT_EQ(decodedResult.txoIndex, 0x1ABC);
+
+    txref = "txrt1:p7ll-llll-lpqq-qa0d-vp";
+    decodedResult = txref::decode(txref);
+    EXPECT_EQ(decodedResult.hrp, "txrt");
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_REGTEST_EXTENDED);
+    EXPECT_EQ(decodedResult.blockHeight, 0xFFFFFF);
+    EXPECT_EQ(decodedResult.transactionPosition, 0x7FFF);
+    EXPECT_EQ(decodedResult.txoIndex, 1);
 }
 
 TEST(TxrefApiTest, txref_decode_check_encoding) {
@@ -249,7 +274,7 @@ TEST(TxrefApiTest, txref_extended_decode_weird) {
     EXPECT_EQ(decodedResult.txoIndex, 0x1ABC);
 }
 
-// check that we correctly encode txrefs in main and testnet
+// check that we correctly encode txrefs for mainnet, testnet and regtest
 TEST(TxrefApiTest, txref_encode) {
     EXPECT_EQ(txref::encode(0, 0),
               "tx1:rqqq-qqqq-qwtv-vjr");
@@ -267,9 +292,13 @@ TEST(TxrefApiTest, txref_encode) {
               "txtest1:x7ll-llll-lvj6-y9j");
     EXPECT_EQ(txref::encodeTestnet(467883, 2355),
               "txtest1:xk63-uqnf-zgve-zdz");
+    EXPECT_EQ(txref::encodeRegtest(0, 0),
+              "txrt1:qqqq-qqqq-qwpz-nyw");
+    EXPECT_EQ(txref::encodeRegtest(0xFFFFFF, 0x7FFF),
+              "txrt1:q7ll-llll-lps4-p3p");
 }
 
-// check that we correctly encode extended txrefs for main and testnet
+// check that we correctly encode extended txrefs for mainnet, testnet and regtest
 TEST(TxrefApiTest, txref_extended_encode) {
 
     EXPECT_EQ(txref::encode(0, 0, 100),
@@ -313,6 +342,12 @@ TEST(TxrefApiTest, txref_extended_encode) {
 
     EXPECT_EQ(txref::encodeTestnet(466793, 2205, 0x1FFF),
               "txtest1:8jk0-uqay-zll8-w0hv-ym");
+
+    EXPECT_EQ(txref::encodeRegtest(0, 0, 100),
+              "txrt1:pqqq-qqqq-qyrq-2z0a-kx");
+
+    EXPECT_EQ(txref::encodeRegtest(0, 0, 0x1FFF),
+              "txrt1:pqqq-qqqq-qll8-yq5j-7s");
 }
 
 // check that we return regular txref for txoIndex=0, unless forceExtended is true
@@ -367,6 +402,16 @@ TEST(TxrefApiTest, txref_extended_encode_force_zero) {
               "txtest1:xjk0-uqay-zghl-p89");
     EXPECT_EQ(txref::encodeTestnet(466793, 2205, 0, true),
               "txtest1:8jk0-uqay-zqqq-ets2-wu");
+
+    EXPECT_EQ(txref::encodeRegtest(0, 0x7FFF, 0),
+              "txrt1:qqqq-qqll-ljsf-p98");
+    EXPECT_EQ(txref::encodeRegtest(0, 0x7FFF, 0, true),
+              "txrt1:pqqq-qqll-lqqq-fmgf-5m");
+
+    EXPECT_EQ(txref::encodeRegtest(0xFFFFFF, 0, 0),
+              "txrt1:q7ll-llqq-qap7-nsg");
+    EXPECT_EQ(txref::encodeRegtest(0xFFFFFF, 0, 0, true),
+              "txrt1:p7ll-llqq-qqqq-cqa8-44");
 }
 
 RC_GTEST_PROP(TxrefApiTestRC, checkThatEncodeAndDecodeProduceSameParameters, ()
@@ -393,6 +438,18 @@ RC_GTEST_PROP(TxrefApiTestRC, checkThatEncodeAndDecodeTestnetProduceSameParamete
     RC_ASSERT(decodedResult.transactionPosition == pos);
 }
 
+RC_GTEST_PROP(TxrefApiTestRC, checkThatEncodeAndDecodeRegtestProduceSameParameters, ()
+) {
+    auto height = *rc::gen::inRange(0, 0xFFFFFF); // MAX_BLOCK_HEIGHT
+    auto pos = *rc::gen::inRange(0, 0x7FFF); // MAX_TRANSACTION_POSITION
+
+    auto txref = txref::encodeRegtest(height, pos);
+    auto decodedResult = txref::decode(txref);
+
+    RC_ASSERT(decodedResult.blockHeight == height);
+    RC_ASSERT(decodedResult.transactionPosition == pos);
+}
+
 RC_GTEST_PROP(TxrefApiTestRC, checkThatExtendedEncodeAndDecodeProduceSameParameters, ()
 ) {
     auto height = *rc::gen::inRange(0, 0xFFFFFF); // MAX_BLOCK_HEIGHT
@@ -409,11 +466,25 @@ RC_GTEST_PROP(TxrefApiTestRC, checkThatExtendedEncodeAndDecodeProduceSameParamet
 
 RC_GTEST_PROP(TxrefApiTestRC, checkThatExtendedEncodeAndDecodeTestnetProduceSameParameters, ()
 ) {
-    auto height = *rc::gen::inRange(0, 0xFFFFFF); // MAX_BLOCK_HEIGHT_TESTNET
-    auto pos = *rc::gen::inRange(0, 0x7FFF); // MAX_TRANSACTION_POSITION_TESTNET
+    auto height = *rc::gen::inRange(0, 0xFFFFFF); // MAX_BLOCK_HEIGHT
+    auto pos = *rc::gen::inRange(0, 0x7FFF); // MAX_TRANSACTION_POSITION
     auto index = *rc::gen::inRange(0, 0x7FFF); // MAX_TXO_INDEX
 
     auto txref = txref::encodeTestnet(height, pos, index, true);
+    auto decodedResult = txref::decode(txref);
+
+    RC_ASSERT(decodedResult.blockHeight == height);
+    RC_ASSERT(decodedResult.transactionPosition == pos);
+    RC_ASSERT(decodedResult.txoIndex == index);
+}
+
+RC_GTEST_PROP(TxrefApiTestRC, checkThatExtendedEncodeAndDecodeRegtestProduceSameParameters, ()
+) {
+    auto height = *rc::gen::inRange(0, 0xFFFFFF); // MAX_BLOCK_HEIGHT
+    auto pos = *rc::gen::inRange(0, 0x7FFF); // MAX_TRANSACTION_POSITION
+    auto index = *rc::gen::inRange(0, 0x7FFF); // MAX_TXO_INDEX
+
+    auto txref = txref::encodeRegtest(height, pos, index, true);
     auto decodedResult = txref::decode(txref);
 
     RC_ASSERT(decodedResult.blockHeight == height);

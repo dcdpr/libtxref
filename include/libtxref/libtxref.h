@@ -11,12 +11,15 @@ namespace txref {
     // bech32 "human readable part"s
     static const char BECH32_HRP_MAIN[] = "tx";
     static const char BECH32_HRP_TEST[] = "txtest";
+    static const char BECH32_HRP_REGTEST[] = "txrt";
 
     // magic codes used for chain identification and namespacing
     static const char MAGIC_BTC_MAIN = 0x3;
     static const char MAGIC_BTC_MAIN_EXTENDED = 0x4;
     static const char MAGIC_BTC_TEST = 0x6;
     static const char MAGIC_BTC_TEST_EXTENDED = 0x7;
+    static const char MAGIC_BTC_REGTEST = 0x0;
+    static const char MAGIC_BTC_REGTEST_EXTENDED = 0x1;
 
     // characters used when pretty-printing
     static const char colon = ':';
@@ -68,6 +71,20 @@ namespace txref {
             const std::string & hrp = BECH32_HRP_TEST
     );
 
+    // encodes the position of a confirmed bitcoin transaction on the
+    // regtest network and returns a bech32 encoded "transaction
+    // position reference" (txref). If txoIndex is greater than 0, then
+    // an extended reference is returned (txref-ext). If txoIndex is zero,
+    // but forceExtended=true, then an extended reference is returned
+    // (txref-ext).
+    std::string encodeRegtest(
+            int blockHeight,
+            int transactionPosition,
+            int txoIndex = 0,
+            bool forceExtended = false,
+            const std::string & hrp = BECH32_HRP_REGTEST
+    );
+
     // decodes a bech32 encoded "transaction position reference" (txref) and
     // returns identifying data
     DecodedResult decode(const std::string & txref);
@@ -92,6 +109,10 @@ namespace txref {
         const int TXREF_STRING_MIN_LENGTH_TESTNET = 22;            // ex: "txtest1rqqqqqqqqmhuqhp"
 
         const int TXREF_EXT_STRING_MIN_LENGTH_TESTNET = 25;        // ex: "txtest18jk0uqayzu4xaw4hzl"
+
+        const int TXREF_STRING_MIN_LENGTH_REGTEST = 20;            // ex: "txrt1q7lllllllps4p3p"
+
+        const int TXREF_EXT_STRING_MIN_LENGTH_REGTEST = 23;        // ex: "txrt1p7lllllllpqqqa0dvp"
 
         const int TXREF_EXTRA_PRETTY_PRINT_CHARS = 4;              // ex: "tx1:rqqq-qqqq-qmhu-qhp"
         const int TXREF_EXT_EXTRA_PRETTY_PRINT_CHARS = 5;          // ex: "tx1:yqqq-qqqq-qqqq-ksvh-26"
@@ -244,6 +265,34 @@ extern txref_error txref_encode(
  * @return E_TXREF_SUCCESS on success, others on error
  */
 extern txref_error txref_encodeTestnet(
+        char * txref,
+        size_t txreflen,
+        int blockHeight,
+        int transactionPosition,
+        int txoIndex,
+        bool forceExtended,
+        const char * hrp,
+        size_t hrplen);
+
+/**
+ * encodes the position of a confirmed bitcoin transaction on the
+ * regtest network and returns a bech32 encoded "transaction position
+ * reference" (txref). If txoIndex is greater than 0, then an extended
+ * reference is returned (txref-ext). If txoIndex is zero, but
+ * forceExtended=true, then an extended reference is returned (txref-ext).
+ *
+ * @param txref pointer to memory to copy the output encoded txref
+ * @param txreflen number of bytes allocated at txref
+ * @param blockHeight the block height of block containing the transaction to encode
+ * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param txoIndex the txo index within the transaction of the transaction to encode
+ * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
+ * @param hrp the "human-readable part" for the bech32 encoding (normally "txrt")
+ * @param hrplen the length of the "human-readable part" string
+ *
+ * @return E_TXREF_SUCCESS on success, others on error
+ */
+extern txref_error txref_encodeRegtest(
         char * txref,
         size_t txreflen,
         int blockHeight,

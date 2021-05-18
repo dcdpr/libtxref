@@ -69,7 +69,9 @@ namespace {
 
     // check that the magic code is for one of the extended txrefs
     void checkExtendedMagicCode(int magicCode) {
-        if(magicCode != txref::MAGIC_BTC_MAIN_EXTENDED && magicCode != txref::MAGIC_BTC_TEST_EXTENDED)
+        if(magicCode != txref::MAGIC_BTC_MAIN_EXTENDED &&
+           magicCode != txref::MAGIC_BTC_TEST_EXTENDED &&
+           magicCode != txref::MAGIC_BTC_REGTEST_EXTENDED)
             throw std::runtime_error("magic code does not support extended txrefs");
     }
 
@@ -220,6 +222,9 @@ namespace {
         if(isLengthValid(txref.length()) && (txref.at(0) == 'x' || txref.at(0) == '8')) {
             return std::string(txref::BECH32_HRP_TEST) + bech32::separator + txref;
         }
+        if(isLengthValid(txref.length()) && (txref.at(0) == 'q' || txref.at(0) == 'p')) {
+            return std::string(txref::BECH32_HRP_REGTEST) + bech32::separator + txref;
+        }
         return txref;
     }
 
@@ -353,10 +358,14 @@ namespace {
         // characters, ex: dashes, periods
         std::string s = bech32::stripUnknownChars(str);
 
-        if(s.length() == TXREF_STRING_MIN_LENGTH || s.length() == TXREF_STRING_MIN_LENGTH_TESTNET )
+        if(s.length() == TXREF_STRING_MIN_LENGTH ||
+           s.length() == TXREF_STRING_MIN_LENGTH_TESTNET ||
+           s.length() == TXREF_STRING_MIN_LENGTH_REGTEST)
             return InputParam::txref;
 
-        if(s.length() == TXREF_EXT_STRING_MIN_LENGTH || s.length() == TXREF_EXT_STRING_MIN_LENGTH_TESTNET)
+        if(s.length() == TXREF_EXT_STRING_MIN_LENGTH ||
+           s.length() == TXREF_EXT_STRING_MIN_LENGTH_TESTNET ||
+           s.length() == TXREF_EXT_STRING_MIN_LENGTH_REGTEST)
             return InputParam::txrefext;
 
         return InputParam::unknown;
@@ -409,6 +418,20 @@ namespace txref {
 
     }
 
+    std::string encodeRegtest(
+            int blockHeight,
+            int transactionPosition,
+            int txoIndex,
+            bool forceExtended,
+            const std::string & hrp) {
+
+        if(txoIndex == 0 && !forceExtended)
+            return txrefEncode(hrp, MAGIC_BTC_REGTEST, blockHeight, transactionPosition);
+
+        return txrefExtEncode(hrp, MAGIC_BTC_REGTEST_EXTENDED, blockHeight, transactionPosition, txoIndex);
+
+    }
+
     DecodedResult decode(const std::string & txref) {
 
         std::string runningCommentary;
@@ -449,7 +472,7 @@ namespace txref {
         else if(bech32DecodedResult.encoding == bech32::Encoding::Bech32) {
             result.encoding = Encoding::Bech32;
             std::string updatedTxref;
-            if(result.magicCode == MAGIC_BTC_MAIN_EXTENDED || result.magicCode == MAGIC_BTC_TEST_EXTENDED) {
+            if(result.magicCode == MAGIC_BTC_MAIN_EXTENDED || result.magicCode == MAGIC_BTC_TEST_EXTENDED || result.magicCode == MAGIC_BTC_REGTEST_EXTENDED) {
                 updatedTxref = txrefExtEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionPosition, result.txoIndex);
             }
             else {
@@ -713,6 +736,61 @@ txref_error txref_encodeTestnet(
     std::string outputTxref;
     try {
         outputTxref = txref::encodeTestnet(blockHeight, transactionPosition, txoIndex, forceExtended, inputHrp);
+    } catch (std::exception &) {
+        // todo: convert exception message
+        return E_TXREF_UNKNOWN_ERROR;
+    }
+
+    if(outputTxref.size() > txreflen-1)
+        return E_TXREF_LENGTH_TOO_SHORT;
+
+    std::copy_n(outputTxref.begin(), outputTxref.size(), txref);
+    txref[outputTxref.size()] = '\0';
+
+    return E_TXREF_SUCCESS;
+}
+
+/**
+ * encodes the position of a confirmed bitcoin transaction on the
+ * regtest network and returns a bech32 encoded "transaction position
+ * reference" (txref). If txoIndex is greater than 0, then an extended
+ * reference is returned (txref-ext). If txoIndex is zero, but
+ * forceExtended=true, then an extended reference is returned (txref-ext).
+ *
+ * @param txref pointer to memory to copy the output encoded txref
+ * @param txreflen number of bytes allocated at txref
+ * @param blockHeight the block height of block containing the transaction to encode
+ * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param txoIndex the txo index within the transaction of the transaction to encode
+ * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
+ * @param hrp the "human-readable part" for the bech32 encoding (normally "txrt")
+ * @param hrplen the length of the "human-readable part" string
+ *
+ * @return E_TXREF_SUCCESS on success, others on error
+ */
+extern "C"
+txref_error txref_encodeRegtest(
+        char * txref,
+        size_t txreflen,
+        int blockHeight,
+        int transactionPosition,
+        int txoIndex,
+        bool forceExtended,
+        const char * hrp,
+        size_t hrplen) {
+
+    if(txref == nullptr)
+        return E_TXREF_NULL_ARGUMENT;
+    if(hrp == nullptr)
+        return E_TXREF_NULL_ARGUMENT;
+
+    std::string inputHrp(hrp);
+    if(inputHrp.size() > hrplen-1)
+        return E_TXREF_LENGTH_TOO_SHORT;
+
+    std::string outputTxref;
+    try {
+        outputTxref = txref::encodeRegtest(blockHeight, transactionPosition, txoIndex, forceExtended, inputHrp);
     } catch (std::exception &) {
         // todo: convert exception message
         return E_TXREF_UNKNOWN_ERROR;

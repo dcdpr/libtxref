@@ -347,6 +347,9 @@ TEST(TxrefTest, txref_add_hrps) {
     txref = "xjk0uqayzghlp89";
     EXPECT_EQ(addHrpIfNeeded(txref), "txtest1xjk0uqayzghlp89");
 
+    txref = "q7lllllllps4p3p";
+    EXPECT_EQ(addHrpIfNeeded(txref), "txrt1q7lllllllps4p3p");
+
 }
 
 // check that we correctly encode some sample txrefs
@@ -384,9 +387,11 @@ RC_GTEST_PROP(TxrefTestRC, checkThatEncodeAndDecodeProduceSameParameters, ()
 TEST(TxrefTest, accept_good_magic_code_for_extended) {
     EXPECT_NO_THROW(checkExtendedMagicCode(txref::MAGIC_BTC_MAIN_EXTENDED));
     EXPECT_NO_THROW(checkExtendedMagicCode(txref::MAGIC_BTC_TEST_EXTENDED));
+    EXPECT_NO_THROW(checkExtendedMagicCode(txref::MAGIC_BTC_REGTEST_EXTENDED));
 
     EXPECT_THROW(checkExtendedMagicCode(txref::MAGIC_BTC_MAIN), std::runtime_error);
     EXPECT_THROW(checkExtendedMagicCode(txref::MAGIC_BTC_TEST), std::runtime_error);
+    EXPECT_THROW(checkExtendedMagicCode(txref::MAGIC_BTC_REGTEST), std::runtime_error);
 }
 
 // check that we can extract the magic code for an extended txref string
@@ -505,6 +510,9 @@ TEST(TxrefTest, txref_add_hrps_extended) {
 
     txref = "8jk0uqayzu4xaw4hzl";
     EXPECT_EQ(addHrpIfNeeded(txref), "txtest18jk0uqayzu4xaw4hzl");
+
+    txref = "p7lllllllpqqqa0dvp";
+    EXPECT_EQ(addHrpIfNeeded(txref), "txrt1p7lllllllpqqqa0dvp");
 
 }
 
@@ -909,6 +917,9 @@ TEST(ClassifyInputStringTest, test_txref) {
     // testnet
     EXPECT_EQ(classifyInputString("txtest1xjk0uqayzghlp89"), InputParam::txref);
     EXPECT_EQ(classifyInputString("xjk0uqayzghlp89"), InputParam::txref);
+    // regtest
+    EXPECT_EQ(classifyInputString("txrt1q7lllllllps4p3p"), InputParam::txref);
+    EXPECT_EQ(classifyInputString("q7lllllllps4p3p"), InputParam::txref);
 }
 
 TEST(ClassifyInputStringTest, test_txrefext) {
@@ -918,6 +929,9 @@ TEST(ClassifyInputStringTest, test_txrefext) {
     // testnet
     EXPECT_EQ(classifyInputString("txtest18jk0uqayzu4xaw4hzl"), InputParam::txrefext);
     EXPECT_EQ(classifyInputString("8jk0uqayzu4xaw4hzl"), InputParam::txrefext);
+    // regtest
+    EXPECT_EQ(classifyInputString("txrt1p7lllllllpqqqa0dvp"), InputParam::txrefext);
+    EXPECT_EQ(classifyInputString("p7lllllllpqqqa0dvp"), InputParam::txrefext);
 }
 
 TEST(TxrefTest, containsUppercaseCharacters) {
@@ -941,4 +955,48 @@ TEST(TxrefTest, containsMixedcaseCharacters) {
     EXPECT_FALSE(cleanTxrefContainsMixedcaseCharacters("123"));
     EXPECT_FALSE(cleanTxrefContainsMixedcaseCharacters("123a"));
     EXPECT_TRUE(cleanTxrefContainsMixedcaseCharacters("A123a"));
+}
+
+TEST(TxrefTest, txref_encode_testnet) {
+    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST, 0, 0),
+              "txtest1:xqqq-qqqq-qrrd-ksa");
+    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST, 0, 0x7FFF),
+              "txtest1:xqqq-qqll-lljx-y35");
+    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST, 0xFFFFFF, 0),
+              "txtest1:x7ll-llqq-qsr3-kym");
+    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST, 0xFFFFFF, 0x7FFF),
+              "txtest1:x7ll-llll-lvj6-y9j");
+}
+
+TEST(TxrefTest, txref_encode_regtest) {
+    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_REGTEST, txref::MAGIC_BTC_REGTEST, 0, 0),
+              "txrt1:qqqq-qqqq-qwpz-nyw");
+    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_REGTEST, txref::MAGIC_BTC_REGTEST, 0, 0x7FFF),
+              "txrt1:qqqq-qqll-ljsf-p98");
+    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_REGTEST, txref::MAGIC_BTC_REGTEST, 0xFFFFFF, 0),
+              "txrt1:q7ll-llqq-qap7-nsg");
+    EXPECT_EQ(txrefEncode(txref::BECH32_HRP_REGTEST, txref::MAGIC_BTC_REGTEST, 0xFFFFFF, 0x7FFF),
+              "txrt1:q7ll-llll-lps4-p3p");
+}
+
+TEST(TxrefTest, txref_encode_extended_testnet) {
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST_EXTENDED, 0, 0, 1),
+              "txtest1:8qqq-qqqq-qpqq-0k68-48");
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST_EXTENDED, 0, 0x7FFF, 1),
+              "txtest1:8qqq-qqll-lpqq-4fp6-4t");
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST_EXTENDED, 0xFFFFFF, 0, 1),
+              "txtest1:87ll-llqq-qpqq-yj55-59");
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_TEST, txref::MAGIC_BTC_TEST_EXTENDED, 0xFFFFFF, 0x7FFF, 1),
+              "txtest1:87ll-llll-lpqq-7d0f-5f");
+}
+
+TEST(TxrefTest, txref_encode_extended_regtest) {
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_REGTEST, txref::MAGIC_BTC_REGTEST_EXTENDED, 0, 0, 1),
+              "txrt1:pqqq-qqqq-qpqq-3x6r-d0");
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_REGTEST, txref::MAGIC_BTC_REGTEST_EXTENDED, 0, 0x7FFF, 1),
+              "txrt1:pqqq-qqll-lpqq-tep7-dr");
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_REGTEST, txref::MAGIC_BTC_REGTEST_EXTENDED, 0xFFFFFF, 0, 1),
+              "txrt1:p7ll-llqq-qpqq-6z5s-vd");
+    EXPECT_EQ(txrefExtEncode(txref::BECH32_HRP_REGTEST, txref::MAGIC_BTC_REGTEST_EXTENDED, 0xFFFFFF, 0x7FFF, 1),
+              "txrt1:p7ll-llll-lpqq-qa0d-vp");
 }
