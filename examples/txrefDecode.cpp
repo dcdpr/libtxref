@@ -15,8 +15,8 @@ int main(int argc, char* argv[])
 
     txref::DecodedResult decodedResult = txref::decode(txref);
 
-    if(decodedResult.magicCode == txref::MAGIC_BTC_TEST ||
-       decodedResult.magicCode == txref::MAGIC_BTC_TEST_EXTENDED)
+    if(decodedResult.magicCode == txref::MAGIC_CODE_TEST ||
+       decodedResult.magicCode == txref::MAGIC_CODE_TEST_EXTENDED)
         std::cout << "testnet: ";
     else
         std::cout << "mainnet: ";

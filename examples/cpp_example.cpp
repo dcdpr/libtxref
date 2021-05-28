@@ -74,7 +74,7 @@ void decodingExamples() {
     decodedResult = txref::decode("tx1:rq3n-qqzq-qk8k-mzd");
 
     assert(decodedResult.hrp == txref::BECH32_HRP_MAIN);
-    assert(decodedResult.magicCode == txref::MAGIC_BTC_MAIN);
+    assert(decodedResult.magicCode == txref::MAGIC_CODE_MAIN);
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionPosition == 2);
     assert(decodedResult.encoding == txref::Bech32m);
@@ -85,7 +85,7 @@ void decodingExamples() {
     decodedResult = txref::decode("txtest1:xq3n-qqyq-qhrg-gy3");
 
     assert(decodedResult.hrp == txref::BECH32_HRP_TEST);
-    assert(decodedResult.magicCode == txref::MAGIC_BTC_TEST);
+    assert(decodedResult.magicCode == txref::MAGIC_CODE_TEST);
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionPosition == 4);
     assert(decodedResult.encoding == txref::Bech32m);
@@ -96,7 +96,7 @@ void decodingExamples() {
     decodedResult = txref::decode("tx1:yq3n-qqzq-qrqq-9z4d-2n");
 
     assert(decodedResult.hrp == "tx");
-    assert(decodedResult.magicCode == txref::MAGIC_BTC_MAIN_EXTENDED);
+    assert(decodedResult.magicCode == txref::MAGIC_CODE_MAIN_EXTENDED);
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionPosition == 2);
     assert(decodedResult.txoIndex == 3);
@@ -108,7 +108,7 @@ void decodingExamples() {
     decodedResult = txref::decode("txtest1:8q3n-qqyq-qxqq-v3x4-ze");
 
     assert(decodedResult.hrp == "txtest");
-    assert(decodedResult.magicCode == txref::MAGIC_BTC_TEST_EXTENDED);
+    assert(decodedResult.magicCode == txref::MAGIC_CODE_TEST_EXTENDED);
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionPosition == 4);
     assert(decodedResult.txoIndex == 6);

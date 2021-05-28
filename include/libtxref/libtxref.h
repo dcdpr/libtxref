@@ -14,12 +14,12 @@ namespace txref {
     static const char BECH32_HRP_REGTEST[] = "txrt";
 
     // magic codes used for chain identification and namespacing
-    static const char MAGIC_BTC_MAIN = 0x3;
-    static const char MAGIC_BTC_MAIN_EXTENDED = 0x4;
-    static const char MAGIC_BTC_TEST = 0x6;
-    static const char MAGIC_BTC_TEST_EXTENDED = 0x7;
-    static const char MAGIC_BTC_REGTEST = 0x0;
-    static const char MAGIC_BTC_REGTEST_EXTENDED = 0x1;
+    static const char MAGIC_CODE_MAIN = 0x3;
+    static const char MAGIC_CODE_MAIN_EXTENDED = 0x4;
+    static const char MAGIC_CODE_TEST = 0x6;
+    static const char MAGIC_CODE_TEST_EXTENDED = 0x7;
+    static const char MAGIC_CODE_REGTEST = 0x0;
+    static const char MAGIC_CODE_REGTEST_EXTENDED = 0x1;
 
     // characters used when pretty-printing
     static const char colon = ':';
@@ -92,9 +92,9 @@ namespace txref {
 
     enum class InputParam { unknown, address, txid, txref, txrefext };
 
-    // This function will determine if the input string is a Bitcoin address, txid,
-    // txref, or txrefext. This is not meant to be an exhaustive test--should only be
-    // used as a first pass to see what sort of string might be passed in as input.
+    // determine if the input string is a Bitcoin address, txid, txref, or txrefext. This
+    // is not meant to be an exhaustive test--should only be used as a first pass to see
+    // what sort of string might be passed in as input.
     InputParam classifyInputString(const std::string & str);
 
 

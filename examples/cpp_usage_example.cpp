@@ -25,7 +25,7 @@ int main() {
     txref::DecodedResult decodedResult = txref::decode(txref);
 
     assert(decodedResult.hrp == "tx");
-    assert(decodedResult.magicCode == txref::MAGIC_BTC_MAIN_EXTENDED);
+    assert(decodedResult.magicCode == txref::MAGIC_CODE_MAIN_EXTENDED);
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionPosition == 2);
     assert(decodedResult.txoIndex == 3);

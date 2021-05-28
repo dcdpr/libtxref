@@ -69,9 +69,9 @@ namespace {
 
     // check that the magic code is for one of the extended txrefs
     void checkExtendedMagicCode(int magicCode) {
-        if(magicCode != txref::MAGIC_BTC_MAIN_EXTENDED &&
-           magicCode != txref::MAGIC_BTC_TEST_EXTENDED &&
-           magicCode != txref::MAGIC_BTC_REGTEST_EXTENDED)
+        if(magicCode != txref::MAGIC_CODE_MAIN_EXTENDED &&
+           magicCode != txref::MAGIC_CODE_TEST_EXTENDED &&
+           magicCode != txref::MAGIC_CODE_REGTEST_EXTENDED)
             throw std::runtime_error("magic code does not support extended txrefs");
     }
 
@@ -398,9 +398,9 @@ namespace txref {
             const std::string & hrp) {
 
         if(txoIndex == 0 && !forceExtended)
-            return txrefEncode(hrp, MAGIC_BTC_MAIN, blockHeight, transactionPosition);
+            return txrefEncode(hrp, MAGIC_CODE_MAIN, blockHeight, transactionPosition);
 
-        return txrefExtEncode(hrp, MAGIC_BTC_MAIN_EXTENDED, blockHeight, transactionPosition, txoIndex);
+        return txrefExtEncode(hrp, MAGIC_CODE_MAIN_EXTENDED, blockHeight, transactionPosition, txoIndex);
 
     }
 
@@ -412,9 +412,9 @@ namespace txref {
             const std::string & hrp) {
 
         if(txoIndex == 0 && !forceExtended)
-            return txrefEncode(hrp, MAGIC_BTC_TEST, blockHeight, transactionPosition);
+            return txrefEncode(hrp, MAGIC_CODE_TEST, blockHeight, transactionPosition);
 
-        return txrefExtEncode(hrp, MAGIC_BTC_TEST_EXTENDED, blockHeight, transactionPosition, txoIndex);
+        return txrefExtEncode(hrp, MAGIC_CODE_TEST_EXTENDED, blockHeight, transactionPosition, txoIndex);
 
     }
 
@@ -426,9 +426,9 @@ namespace txref {
             const std::string & hrp) {
 
         if(txoIndex == 0 && !forceExtended)
-            return txrefEncode(hrp, MAGIC_BTC_REGTEST, blockHeight, transactionPosition);
+            return txrefEncode(hrp, MAGIC_CODE_REGTEST, blockHeight, transactionPosition);
 
-        return txrefExtEncode(hrp, MAGIC_BTC_REGTEST_EXTENDED, blockHeight, transactionPosition, txoIndex);
+        return txrefExtEncode(hrp, MAGIC_CODE_REGTEST_EXTENDED, blockHeight, transactionPosition, txoIndex);
 
     }
 
@@ -472,7 +472,7 @@ namespace txref {
         else if(bech32DecodedResult.encoding == bech32::Encoding::Bech32) {
             result.encoding = Encoding::Bech32;
             std::string updatedTxref;
-            if(result.magicCode == MAGIC_BTC_MAIN_EXTENDED || result.magicCode == MAGIC_BTC_TEST_EXTENDED || result.magicCode == MAGIC_BTC_REGTEST_EXTENDED) {
+            if(result.magicCode == MAGIC_CODE_MAIN_EXTENDED || result.magicCode == MAGIC_CODE_TEST_EXTENDED || result.magicCode == MAGIC_CODE_REGTEST_EXTENDED) {
                 updatedTxref = txrefExtEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionPosition, result.txoIndex);
             }
             else {

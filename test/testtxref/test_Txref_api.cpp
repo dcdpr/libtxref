@@ -21,7 +21,7 @@ TEST(TxrefApiTest, txref_decode) {
     txref = "tx1:rqqq-qqqq-qwtv-vjr";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN);
     EXPECT_EQ(decodedResult.blockHeight, 0);
     EXPECT_EQ(decodedResult.transactionPosition, 0);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -29,7 +29,7 @@ TEST(TxrefApiTest, txref_decode) {
     txref = "tx1:rqqq-qqll-lj68-7n2";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN);
     EXPECT_EQ(decodedResult.blockHeight, 0);
     EXPECT_EQ(decodedResult.transactionPosition, 0x7FFF);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -37,7 +37,7 @@ TEST(TxrefApiTest, txref_decode) {
     txref = "tx1:r7ll-llqq-qats-vx9";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN);
     EXPECT_EQ(decodedResult.blockHeight, 0xFFFFFF);
     EXPECT_EQ(decodedResult.transactionPosition, 0);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -45,7 +45,7 @@ TEST(TxrefApiTest, txref_decode) {
     txref = "tx1:r7ll-llll-lp6m-78v";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN);
     EXPECT_EQ(decodedResult.blockHeight, 0xFFFFFF);
     EXPECT_EQ(decodedResult.transactionPosition, 0x7FFF);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -53,7 +53,7 @@ TEST(TxrefApiTest, txref_decode) {
     txref = "tx1:rjk0-uqay-z9l7-m9m";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN);
     EXPECT_EQ(decodedResult.blockHeight, 466793);
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -61,7 +61,7 @@ TEST(TxrefApiTest, txref_decode) {
     txref = "txtest1:xjk0-uqay-zghl-p89";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "txtest");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_TEST);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_TEST);
     EXPECT_EQ(decodedResult.blockHeight, 466793);
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -69,7 +69,7 @@ TEST(TxrefApiTest, txref_decode) {
     txref = "txrt1:q7ll-llll-lps4-p3p";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "txrt");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_REGTEST);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_REGTEST);
     EXPECT_EQ(decodedResult.blockHeight, 0xFFFFFF);
     EXPECT_EQ(decodedResult.transactionPosition, 0x7FFF);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -83,7 +83,7 @@ TEST(TxrefApiTest, txref_decode_weird_formatting) {
     txref = "tx1---rqqq-<qqqq>-q>w<tv-v#j#r--";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN);
     EXPECT_EQ(decodedResult.blockHeight, 0);
     EXPECT_EQ(decodedResult.transactionPosition, 0);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -92,7 +92,7 @@ TEST(TxrefApiTest, txref_decode_weird_formatting) {
     txref = "tx1-rqqq qqqq qwtv vjr";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN);
     EXPECT_EQ(decodedResult.blockHeight, 0);
     EXPECT_EQ(decodedResult.transactionPosition, 0);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -101,7 +101,7 @@ TEST(TxrefApiTest, txref_decode_weird_formatting) {
     txref = "tx1rqqq,qqqq.qwtv.vjr";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN);
     EXPECT_EQ(decodedResult.blockHeight, 0);
     EXPECT_EQ(decodedResult.transactionPosition, 0);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -110,7 +110,7 @@ TEST(TxrefApiTest, txref_decode_weird_formatting) {
     txref = "tx@test1-xj$$k0-uq@@ay---zghl-p%$8 9";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "txtest");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_TEST);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_TEST);
     EXPECT_EQ(decodedResult.blockHeight, 466793);
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -126,7 +126,7 @@ TEST(TxrefApiTest, txref_decode_no_HRPs) {
     txref = "rqqq-qqqq-qwtv-vjr";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN);
     EXPECT_EQ(decodedResult.blockHeight, 0);
     EXPECT_EQ(decodedResult.transactionPosition, 0);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -135,7 +135,7 @@ TEST(TxrefApiTest, txref_decode_no_HRPs) {
     txref = "xjk0-uqay-zghl-p89";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "txtest");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_TEST);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_TEST);
     EXPECT_EQ(decodedResult.blockHeight, 466793);
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -144,7 +144,7 @@ TEST(TxrefApiTest, txref_decode_no_HRPs) {
     txref = "q7ll-llll-lps4-p3p";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "txrt");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_REGTEST);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_REGTEST);
     EXPECT_EQ(decodedResult.blockHeight, 0xFFFFFF);
     EXPECT_EQ(decodedResult.transactionPosition, 0x7FFF);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -160,7 +160,7 @@ TEST(TxrefApiTest, txref_extended_decode) {
     txref = "tx1:yqqq-qqqq-qqqq-rvum-0c";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN_EXTENDED);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN_EXTENDED);
     EXPECT_EQ(decodedResult.blockHeight, 0);
     EXPECT_EQ(decodedResult.transactionPosition, 0);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -168,7 +168,7 @@ TEST(TxrefApiTest, txref_extended_decode) {
     txref = "tx1:y7ll-llqq-qqqq-ggjg-w6";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN_EXTENDED);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN_EXTENDED);
     EXPECT_EQ(decodedResult.blockHeight, 0xFFFFFF);
     EXPECT_EQ(decodedResult.transactionPosition, 0);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -176,7 +176,7 @@ TEST(TxrefApiTest, txref_extended_decode) {
     txref = "tx1:yjk0-uqay-zu4x-x22s-y6";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN_EXTENDED);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN_EXTENDED);
     EXPECT_EQ(decodedResult.blockHeight, 466793);
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
     EXPECT_EQ(decodedResult.txoIndex, 0x1ABC);
@@ -184,7 +184,7 @@ TEST(TxrefApiTest, txref_extended_decode) {
     txref = "txtest1:8jk0-uqay-zu4x-gj9m-8a";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "txtest");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_TEST_EXTENDED);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_TEST_EXTENDED);
     EXPECT_EQ(decodedResult.blockHeight, 466793);
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
     EXPECT_EQ(decodedResult.txoIndex, 0x1ABC);
@@ -192,7 +192,7 @@ TEST(TxrefApiTest, txref_extended_decode) {
     txref = "txrt1:p7ll-llll-lpqq-qa0d-vp";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "txrt");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_REGTEST_EXTENDED);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_REGTEST_EXTENDED);
     EXPECT_EQ(decodedResult.blockHeight, 0xFFFFFF);
     EXPECT_EQ(decodedResult.transactionPosition, 0x7FFF);
     EXPECT_EQ(decodedResult.txoIndex, 1);
@@ -244,7 +244,7 @@ TEST(TxrefApiTest, txref_extended_decode_weird) {
     txref = "y q#q q- # q q q# %q   -#q % q qq# rv (um-)  0c";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN_EXTENDED);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN_EXTENDED);
     EXPECT_EQ(decodedResult.blockHeight, 0);
     EXPECT_EQ(decodedResult.transactionPosition, 0);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -252,7 +252,7 @@ TEST(TxrefApiTest, txref_extended_decode_weird) {
     txref = "y 7 l l - l l q q - q q q q - gg  j g - w  6   ";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN_EXTENDED);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN_EXTENDED);
     EXPECT_EQ(decodedResult.blockHeight, 0xFFFFFF);
     EXPECT_EQ(decodedResult.transactionPosition, 0);
     EXPECT_EQ(decodedResult.txoIndex, 0);
@@ -260,7 +260,7 @@ TEST(TxrefApiTest, txref_extended_decode_weird) {
     txref = "y#$%jk0$%^-u$%^&qa^&*(y-#$%z^&*u4x^&*-x2%^&*(2s-^&*(y6";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "tx");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_MAIN_EXTENDED);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_MAIN_EXTENDED);
     EXPECT_EQ(decodedResult.blockHeight, 466793);
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
     EXPECT_EQ(decodedResult.txoIndex, 0x1ABC);
@@ -268,7 +268,7 @@ TEST(TxrefApiTest, txref_extended_decode_weird) {
     txref = "8jk.0.-.u.q.a..y.-..z.u..4.x..-..g.j.9.m.-.8....a..";
     decodedResult = txref::decode(txref);
     EXPECT_EQ(decodedResult.hrp, "txtest");
-    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_BTC_TEST_EXTENDED);
+    EXPECT_EQ(decodedResult.magicCode, txref::MAGIC_CODE_TEST_EXTENDED);
     EXPECT_EQ(decodedResult.blockHeight, 466793);
     EXPECT_EQ(decodedResult.transactionPosition, 2205);
     EXPECT_EQ(decodedResult.txoIndex, 0x1ABC);

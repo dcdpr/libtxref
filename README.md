@@ -66,7 +66,7 @@ See [the full code for the following examples](https://raw.githubusercontent.com
     txref::DecodedResult decodedResult = txref::decode("tx1:yq3n-qqzq-qrqq-9z4d-2n");
 
     assert(decodedResult.hrp == "tx");
-    assert(decodedResult.magicCode == txref::MAGIC_BTC_MAIN_EXTENDED);
+    assert(decodedResult.magicCode == txref::MAGIC_CODE_MAIN_EXTENDED);
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionPosition == 2);
     assert(decodedResult.txoIndex == 3);
@@ -84,7 +84,7 @@ be used instead.
     txref::DecodedResult decodedResult = txref::decode("txtest1:xjk0-uqay-zat0-dz8");
 
     assert(decodedResult.hrp == "txtest");
-    assert(decodedResult.magicCode == txref::MAGIC_BTC_TEST);
+    assert(decodedResult.magicCode == txref::MAGIC_CODE_TEST);
     assert(decodedResult.blockHeight == 466793);
     assert(decodedResult.transactionPosition == 2205);
     assert(decodedResult.txoIndex == 0);
