@@ -54,7 +54,7 @@ void encode_mainnetExamples_areSuccessful() {
     char hrp[] = "tx";
 
     struct examples {
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
         const char *txref;
     };
 
@@ -74,7 +74,7 @@ void encode_mainnetExamples_areSuccessful() {
         assert(txref_encode(
                 txref, expectedTxrefSize,
                 mainnet_examples[example_index].blockHeight,
-                mainnet_examples[example_index].transactionPosition,
+                mainnet_examples[example_index].transactionIndex,
                 mainnet_examples[example_index].txoIndex, false, hrp, sizeof(hrp)) == E_TXREF_SUCCESS);
         assert(strcmp(txref, expectedTxref) == 0);
 
@@ -86,7 +86,7 @@ void encode_mainnetExtendedExamples_areSuccessful() {
     char hrp[] = "tx";
 
     struct examples {
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
         const char *txref;
     };
 
@@ -109,7 +109,7 @@ void encode_mainnetExtendedExamples_areSuccessful() {
         assert(txref_encode(
                 txref, expectedTxrefSize,
                 mainnet_examples[example_index].blockHeight,
-                mainnet_examples[example_index].transactionPosition,
+                mainnet_examples[example_index].transactionIndex,
                 mainnet_examples[example_index].txoIndex, false, hrp, sizeof(hrp)) == E_TXREF_SUCCESS);
         assert(strcmp(txref, expectedTxref) == 0);
 
@@ -121,7 +121,7 @@ void encode_testnetExamples_areSuccessful() {
     char hrp[] = "txtest";
 
     struct examples {
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
         const char *txref;
     };
 
@@ -140,7 +140,7 @@ void encode_testnetExamples_areSuccessful() {
         assert(txref_encodeTestnet(
                 txref, expectedTxrefSize,
                 testnet_examples[example_index].blockHeight,
-                testnet_examples[example_index].transactionPosition,
+                testnet_examples[example_index].transactionIndex,
                 testnet_examples[example_index].txoIndex, false, hrp, sizeof(hrp)) == E_TXREF_SUCCESS);
         assert(strcmp(txref, expectedTxref) == 0);
 
@@ -152,7 +152,7 @@ void encode_testnetExtendedExamples_areSuccessful() {
     char hrp[] = "txtest";
 
     struct examples {
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
         const char *txref;
     };
 
@@ -174,7 +174,7 @@ void encode_testnetExtendedExamples_areSuccessful() {
         assert(txref_encodeTestnet(
                 txref, expectedTxrefSize,
                 testnet_examples[example_index].blockHeight,
-                testnet_examples[example_index].transactionPosition,
+                testnet_examples[example_index].transactionIndex,
                 testnet_examples[example_index].txoIndex, false, hrp, sizeof(hrp)) == E_TXREF_SUCCESS);
         assert(strcmp(txref, expectedTxref) == 0);
 
@@ -186,7 +186,7 @@ void encode_regtestExamples_areSuccessful() {
     char hrp[] = "txrt";
 
     struct examples {
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
         const char *txref;
     };
 
@@ -204,7 +204,7 @@ void encode_regtestExamples_areSuccessful() {
         assert(txref_encodeRegtest(
                 txref, expectedTxrefSize,
                 regtest_examples[example_index].blockHeight,
-                regtest_examples[example_index].transactionPosition,
+                regtest_examples[example_index].transactionIndex,
                 regtest_examples[example_index].txoIndex, false, hrp, sizeof(hrp)) == E_TXREF_SUCCESS);
         assert(strcmp(txref, expectedTxref) == 0);
 
@@ -216,7 +216,7 @@ void encode_regtestExtendedExamples_areSuccessful() {
     char hrp[] = "txrt";
 
     struct examples {
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
         const char *txref;
     };
 
@@ -234,7 +234,7 @@ void encode_regtestExtendedExamples_areSuccessful() {
         assert(txref_encodeRegtest(
                 txref, expectedTxrefSize,
                 regtest_examples[example_index].blockHeight,
-                regtest_examples[example_index].transactionPosition,
+                regtest_examples[example_index].transactionIndex,
                 regtest_examples[example_index].txoIndex, false, hrp, sizeof(hrp)) == E_TXREF_SUCCESS);
         assert(strcmp(txref, expectedTxref) == 0);
 
@@ -248,7 +248,7 @@ void encode_AnyExamples_areSuccessful() {
     // any kind of txref (regular or extended)
 
     struct examples {
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
         const char *txref;
     };
 
@@ -271,7 +271,7 @@ void encode_AnyExamples_areSuccessful() {
             assert(txref_encode(
                     txref, expectedTxrefSize,
                     mainnet_examples[example_index].blockHeight,
-                    mainnet_examples[example_index].transactionPosition,
+                    mainnet_examples[example_index].transactionIndex,
                     mainnet_examples[example_index].txoIndex, false, hrp, hrplen) == E_TXREF_SUCCESS);
             assert(strcmp(txref, expectedTxref) == 0);
 
@@ -298,7 +298,7 @@ void encode_AnyExamples_areSuccessful() {
             assert(txref_encodeTestnet(
                     txref, expectedTxrefSize,
                     testnet_examples[example_index].blockHeight,
-                    testnet_examples[example_index].transactionPosition,
+                    testnet_examples[example_index].transactionIndex,
                     testnet_examples[example_index].txoIndex, false, hrp, hrplen) == E_TXREF_SUCCESS);
             assert(strcmp(txref, expectedTxref) == 0);
 
@@ -354,7 +354,7 @@ void decode_mainnetExamples_areSuccessful() {
 
     struct examples {
         const char *txref;
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
     };
 
     struct examples mainnet_examples[] = {
@@ -376,7 +376,7 @@ void decode_mainnetExamples_areSuccessful() {
 
         assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
         assert(decodedResult->blockHeight == mainnet_examples[example_index].blockHeight);
-        assert(decodedResult->transactionPosition == mainnet_examples[example_index].transactionPosition);
+        assert(decodedResult->transactionIndex == mainnet_examples[example_index].transactionIndex);
         assert(decodedResult->txoIndex == mainnet_examples[example_index].txoIndex);
         assert(strcmp(decodedResult->txref, txref) == 0);
         assert(strcmp(decodedResult->hrp, hrp) == 0);
@@ -393,7 +393,7 @@ void decode_mainnetExtendedExamples_areSuccessful() {
 
     struct examples {
         const char *txref;
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
     };
 
     struct examples mainnet_examples[] = {
@@ -418,7 +418,7 @@ void decode_mainnetExtendedExamples_areSuccessful() {
 
         assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
         assert(decodedResult->blockHeight == mainnet_examples[example_index].blockHeight);
-        assert(decodedResult->transactionPosition == mainnet_examples[example_index].transactionPosition);
+        assert(decodedResult->transactionIndex == mainnet_examples[example_index].transactionIndex);
         assert(decodedResult->txoIndex == mainnet_examples[example_index].txoIndex);
         assert(strcmp(decodedResult->txref, txref) == 0);
         assert(strcmp(decodedResult->hrp, hrp) == 0);
@@ -435,7 +435,7 @@ void decode_testnetExamples_areSuccessful() {
 
     struct examples {
         const char *txref;
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
     };
 
     struct examples testnet_examples[] = {
@@ -456,7 +456,7 @@ void decode_testnetExamples_areSuccessful() {
 
         assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
         assert(decodedResult->blockHeight == testnet_examples[example_index].blockHeight);
-        assert(decodedResult->transactionPosition == testnet_examples[example_index].transactionPosition);
+        assert(decodedResult->transactionIndex == testnet_examples[example_index].transactionIndex);
         assert(decodedResult->txoIndex == testnet_examples[example_index].txoIndex);
         assert(strcmp(decodedResult->txref, txref) == 0);
         assert(strcmp(decodedResult->hrp, hrp) == 0);
@@ -473,7 +473,7 @@ void decode_testnetExtendedExamples_areSuccessful() {
 
     struct examples {
         const char *txref;
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
     };
 
     struct examples testnet_examples[] = {
@@ -497,7 +497,7 @@ void decode_testnetExtendedExamples_areSuccessful() {
 
         assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
         assert(decodedResult->blockHeight == testnet_examples[example_index].blockHeight);
-        assert(decodedResult->transactionPosition == testnet_examples[example_index].transactionPosition);
+        assert(decodedResult->transactionIndex == testnet_examples[example_index].transactionIndex);
         assert(decodedResult->txoIndex == testnet_examples[example_index].txoIndex);
         assert(strcmp(decodedResult->txref, txref) == 0);
         assert(strcmp(decodedResult->hrp, hrp) == 0);
@@ -514,7 +514,7 @@ void decode_regtestExamples_areSuccessful() {
 
     struct examples {
         const char *txref;
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
     };
 
     struct examples regtest_examples[] = {
@@ -534,7 +534,7 @@ void decode_regtestExamples_areSuccessful() {
 
         assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
         assert(decodedResult->blockHeight == regtest_examples[example_index].blockHeight);
-        assert(decodedResult->transactionPosition == regtest_examples[example_index].transactionPosition);
+        assert(decodedResult->transactionIndex == regtest_examples[example_index].transactionIndex);
         assert(decodedResult->txoIndex == regtest_examples[example_index].txoIndex);
         assert(strcmp(decodedResult->txref, txref) == 0);
         assert(strcmp(decodedResult->hrp, hrp) == 0);
@@ -551,7 +551,7 @@ void decode_regtestExtendedExamples_areSuccessful() {
 
     struct examples {
         const char *txref;
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
     };
 
     struct examples testnet_examples[] = {
@@ -571,7 +571,7 @@ void decode_regtestExtendedExamples_areSuccessful() {
 
         assert(txref_decode(decodedResult, txref, strlen(txref)+1) == E_TXREF_SUCCESS);
         assert(decodedResult->blockHeight == testnet_examples[example_index].blockHeight);
-        assert(decodedResult->transactionPosition == testnet_examples[example_index].transactionPosition);
+        assert(decodedResult->transactionIndex == testnet_examples[example_index].transactionIndex);
         assert(decodedResult->txoIndex == testnet_examples[example_index].txoIndex);
         assert(strcmp(decodedResult->txref, txref) == 0);
         assert(strcmp(decodedResult->hrp, hrp) == 0);
@@ -590,7 +590,7 @@ void decode_AnyExtendedExamples_areSuccessful() {
 
     struct examples {
         const char *txref;
-        int blockHeight, transactionPosition, txoIndex;
+        int blockHeight, transactionIndex, txoIndex;
     };
 
     { // mainnet
@@ -608,7 +608,7 @@ void decode_AnyExtendedExamples_areSuccessful() {
 
             assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
             assert(decodedResult->blockHeight == mainnet_examples[example_index].blockHeight);
-            assert(decodedResult->transactionPosition == mainnet_examples[example_index].transactionPosition);
+            assert(decodedResult->transactionIndex == mainnet_examples[example_index].transactionIndex);
             assert(decodedResult->txoIndex == mainnet_examples[example_index].txoIndex);
             assert(strcmp(decodedResult->txref, txref) == 0);
             assert(strcmp(decodedResult->hrp, hrp) == 0);
@@ -633,7 +633,7 @@ void decode_AnyExtendedExamples_areSuccessful() {
 
             assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
             assert(decodedResult->blockHeight == testnet_examples[example_index].blockHeight);
-            assert(decodedResult->transactionPosition == testnet_examples[example_index].transactionPosition);
+            assert(decodedResult->transactionIndex == testnet_examples[example_index].transactionIndex);
             assert(decodedResult->txoIndex == testnet_examples[example_index].txoIndex);
             assert(strcmp(decodedResult->txref, txref) == 0);
             assert(strcmp(decodedResult->hrp, hrp) == 0);

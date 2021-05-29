@@ -36,7 +36,7 @@ namespace txref {
         std::string hrp;
         std::string txref;
         int blockHeight = 0;
-        int transactionPosition = 0;
+        int transactionIndex = 0;
         int txoIndex = 0;
         int magicCode = 0;
         Encoding encoding = Encoding::Invalid;
@@ -51,7 +51,7 @@ namespace txref {
     // (txref-ext).
     std::string encode(
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex = 0,
             bool forceExtended = false,
             const std::string & hrp = BECH32_HRP_MAIN
@@ -65,7 +65,7 @@ namespace txref {
     // (txref-ext).
     std::string encodeTestnet(
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex = 0,
             bool forceExtended = false,
             const std::string & hrp = BECH32_HRP_TEST
@@ -79,7 +79,7 @@ namespace txref {
     // (txref-ext).
     std::string encodeRegtest(
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex = 0,
             bool forceExtended = false,
             const std::string & hrp = BECH32_HRP_REGTEST
@@ -149,7 +149,7 @@ typedef struct txref_DecodedResult_s {
     char * txref;
     size_t txreflen;
     int blockHeight;
-    int transactionPosition;
+    int transactionIndex;
     int txoIndex;
     int magicCode;
     txref_encoding encoding;
@@ -228,7 +228,7 @@ extern void free_DecodedResult_storage(txref_DecodedResult *decodedResult);
  * @param txref pointer to memory to copy the output encoded txref
  * @param txreflen number of bytes allocated at txref
  * @param blockHeight the block height of block containing the transaction to encode
- * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param transactionIndex the transaction index within the block of the transaction to encode
  * @param txoIndex the txo index within the transaction of the transaction to encode
  * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
  * @param hrp the "human-readable part" for the bech32 encoding (normally "tx")
@@ -240,7 +240,7 @@ extern txref_error txref_encode(
         char * txref,
         size_t txreflen,
         int blockHeight,
-        int transactionPosition,
+        int transactionIndex,
         int txoIndex,
         bool forceExtended,
         const char * hrp,
@@ -256,7 +256,7 @@ extern txref_error txref_encode(
  * @param txref pointer to memory to copy the output encoded txref
  * @param txreflen number of bytes allocated at txref
  * @param blockHeight the block height of block containing the transaction to encode
- * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param transactionIndex the transaction index within the block of the transaction to encode
  * @param txoIndex the txo index within the transaction of the transaction to encode
  * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
  * @param hrp the "human-readable part" for the bech32 encoding (normally "txtest")
@@ -268,7 +268,7 @@ extern txref_error txref_encodeTestnet(
         char * txref,
         size_t txreflen,
         int blockHeight,
-        int transactionPosition,
+        int transactionIndex,
         int txoIndex,
         bool forceExtended,
         const char * hrp,
@@ -284,7 +284,7 @@ extern txref_error txref_encodeTestnet(
  * @param txref pointer to memory to copy the output encoded txref
  * @param txreflen number of bytes allocated at txref
  * @param blockHeight the block height of block containing the transaction to encode
- * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param transactionIndex the transaction index within the block of the transaction to encode
  * @param txoIndex the txo index within the transaction of the transaction to encode
  * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
  * @param hrp the "human-readable part" for the bech32 encoding (normally "txrt")
@@ -296,7 +296,7 @@ extern txref_error txref_encodeRegtest(
         char * txref,
         size_t txreflen,
         int blockHeight,
-        int transactionPosition,
+        int transactionIndex,
         int txoIndex,
         bool forceExtended,
         const char * hrp,

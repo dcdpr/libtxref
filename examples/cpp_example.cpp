@@ -9,18 +9,18 @@
 
 void encodingExamples() {
 
-    int blockHeight, transactionPosition, txoIndex;
+    int blockHeight, transactionIndex, txoIndex;
     std::string txref;
 
 
     // mainnet, standard txref example
 
     blockHeight = 10000;
-    transactionPosition = 2;
+    transactionIndex = 2;
 
-    txref = txref::encode(blockHeight, transactionPosition);
+    txref = txref::encode(blockHeight, transactionIndex);
 
-    std::cout << "mainnet, standard txref for (blockHeight = 10000, transactionPosition=2):" << std::endl;
+    std::cout << "mainnet, standard txref for (blockHeight = 10000, transactionIndex=2):" << std::endl;
     std::cout << txref << "\n\n";
     assert(txref == "tx1:rq3n-qqzq-qk8k-mzd");
 
@@ -28,11 +28,11 @@ void encodingExamples() {
     // testnet, standard txref example
 
     blockHeight = 10000;
-    transactionPosition = 4;
+    transactionIndex = 4;
 
-    txref = txref::encodeTestnet(blockHeight, transactionPosition);
+    txref = txref::encodeTestnet(blockHeight, transactionIndex);
 
-    std::cout << "testnet, standard txref for (blockHeight = 10000, transactionPosition=4):" << std::endl;
+    std::cout << "testnet, standard txref for (blockHeight = 10000, transactionIndex=4):" << std::endl;
     std::cout << txref << "\n\n";
     assert(txref == "txtest1:xq3n-qqyq-qhrg-gy3");
 
@@ -40,12 +40,12 @@ void encodingExamples() {
     // mainnet, extended txref example
 
     blockHeight = 10000;
-    transactionPosition = 2;
+    transactionIndex = 2;
     txoIndex = 3;
 
-    txref = txref::encode(blockHeight, transactionPosition, txoIndex);
+    txref = txref::encode(blockHeight, transactionIndex, txoIndex);
 
-    std::cout << "mainnet, extended txref for (blockHeight = 10000, transactionPosition=2, txoIndex=3):" << std::endl;
+    std::cout << "mainnet, extended txref for (blockHeight = 10000, transactionIndex=2, txoIndex=3):" << std::endl;
     std::cout << txref << "\n\n";
     assert(txref == "tx1:yq3n-qqzq-qrqq-9z4d-2n");
 
@@ -53,12 +53,12 @@ void encodingExamples() {
     // testnet, extended txref example
 
     blockHeight = 10000;
-    transactionPosition  = 4;
+    transactionIndex  = 4;
     txoIndex = 6;
 
-    txref = txref::encodeTestnet(blockHeight, transactionPosition, txoIndex);
+    txref = txref::encodeTestnet(blockHeight, transactionIndex, txoIndex);
 
-    std::cout << "testnet, extended txref for (blockHeight = 10000, transactionPosition=4, txoIndex=6):" << std::endl;
+    std::cout << "testnet, extended txref for (blockHeight = 10000, transactionIndex=4, txoIndex=6):" << std::endl;
     std::cout << txref << "\n\n";
     assert(txref == "txtest1:8q3n-qqyq-qxqq-v3x4-ze");
 
@@ -76,7 +76,7 @@ void decodingExamples() {
     assert(decodedResult.hrp == txref::BECH32_HRP_MAIN);
     assert(decodedResult.magicCode == txref::MAGIC_CODE_MAIN);
     assert(decodedResult.blockHeight == 10000);
-    assert(decodedResult.transactionPosition == 2);
+    assert(decodedResult.transactionIndex == 2);
     assert(decodedResult.encoding == txref::Bech32m);
 
 
@@ -87,7 +87,7 @@ void decodingExamples() {
     assert(decodedResult.hrp == txref::BECH32_HRP_TEST);
     assert(decodedResult.magicCode == txref::MAGIC_CODE_TEST);
     assert(decodedResult.blockHeight == 10000);
-    assert(decodedResult.transactionPosition == 4);
+    assert(decodedResult.transactionIndex == 4);
     assert(decodedResult.encoding == txref::Bech32m);
 
 
@@ -98,7 +98,7 @@ void decodingExamples() {
     assert(decodedResult.hrp == "tx");
     assert(decodedResult.magicCode == txref::MAGIC_CODE_MAIN_EXTENDED);
     assert(decodedResult.blockHeight == 10000);
-    assert(decodedResult.transactionPosition == 2);
+    assert(decodedResult.transactionIndex == 2);
     assert(decodedResult.txoIndex == 3);
     assert(decodedResult.encoding == txref::Bech32m);
 
@@ -110,7 +110,7 @@ void decodingExamples() {
     assert(decodedResult.hrp == "txtest");
     assert(decodedResult.magicCode == txref::MAGIC_CODE_TEST_EXTENDED);
     assert(decodedResult.blockHeight == 10000);
-    assert(decodedResult.transactionPosition == 4);
+    assert(decodedResult.transactionIndex == 4);
     assert(decodedResult.txoIndex == 6);
     assert(decodedResult.encoding == txref::Bech32m);
 

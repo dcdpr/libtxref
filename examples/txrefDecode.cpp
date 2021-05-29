@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
         std::cout << "mainnet: ";
 
     std::cout << " blockHeight: " << decodedResult.blockHeight;
-    std::cout << " transactionPosition: " << decodedResult.transactionPosition;
+    std::cout << " transactionIndex: " << decodedResult.transactionIndex;
     std::cout << " txoIndex: " << decodedResult.txoIndex;
     std::cout << std::endl;
 

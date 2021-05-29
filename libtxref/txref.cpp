@@ -14,7 +14,7 @@ namespace {
 
     const int MAX_BLOCK_HEIGHT         = 0xFFFFFF; // 16777215
 
-    const int MAX_TRANSACTION_POSITION = 0x7FFF;   // 32767
+    const int MAX_TRANSACTION_INDEX    = 0x7FFF;   // 32767
 
     const int MAX_TXO_INDEX            = 0x7FFF;   // 32767
 
@@ -49,10 +49,10 @@ namespace {
             throw std::runtime_error("block height is too large");
     }
 
-    // a transaction's position can only be in a certain range
-    void checkTransactionPositionRange(int transactionPosition) {
-        if(transactionPosition < 0 || transactionPosition > MAX_TRANSACTION_POSITION)
-            throw std::runtime_error("transaction position is too large");
+    // a transaction's index can only be in a certain range
+    void checkTransactionIndexRange(int transactionIndex) {
+        if(transactionIndex < 0 || transactionIndex > MAX_TRANSACTION_INDEX)
+            throw std::runtime_error("transaction index is too large");
     }
 
     // a TXO's index can only be in a certain range
@@ -173,15 +173,15 @@ namespace {
         }
     }
 
-    // extract the transaction position from the decoded data part
-    void extractTransactionPosition(int & transactionPosition, const std::vector<unsigned char> &dp) {
+    // extract the transaction index from the decoded data part
+    void extractTransactionIndex(int & transactionIndex, const std::vector<unsigned char> &dp) {
         uint8_t version = 0;
         extractVersion(version, dp);
 
         if(version == 0) {
-            transactionPosition = dp[6];
-            transactionPosition |= (dp[7] << 5u);
-            transactionPosition |= (dp[8] << 10u);
+            transactionIndex = dp[6];
+            transactionIndex |= (dp[7] << 5u);
+            transactionIndex |= (dp[8] << 10u);
         }
         else {
             std::stringstream ss;
@@ -261,15 +261,15 @@ namespace {
             const std::string &hrp,
             int magicCode,
             int blockHeight,
-            int transactionPosition) {
+            int transactionIndex) {
 
         checkBlockHeightRange(blockHeight);
-        checkTransactionPositionRange(transactionPosition);
+        checkTransactionIndexRange(transactionIndex);
         checkMagicCodeRange(magicCode);
 
         // ranges have been checked. make unsigned copies of params
         auto bh = static_cast<uint32_t>(blockHeight);
-        auto tp = static_cast<uint32_t>(transactionPosition);
+        auto tp = static_cast<uint32_t>(transactionIndex);
 
         std::vector<unsigned char> dp(DATA_SIZE);
 
@@ -286,10 +286,10 @@ namespace {
         dp[4] |= (bh & 0x7C000u) >> 14u;          // sets 5 bits in 5th 5 bits
         dp[5] |= (bh & 0xF80000u) >> 19u;         // sets 5 bits in 6th 5 bits (24 bits total for blockHeight)
 
-        // set transaction position
+        // set transaction index
         dp[6] |= (tp & 0x1Fu);                    // sets 5 bits in 7th 5 bits
         dp[7] |= (tp & 0x3E0u) >> 5u;             // sets 5 bits in 8th 5 bits
-        dp[8] |= (tp & 0x7C00u) >> 10u;           // sets 5 bits in 9th 5 bits (15 bits total for transactionPosition)
+        dp[8] |= (tp & 0x7C00u) >> 10u;           // sets 5 bits in 9th 5 bits (15 bits total for transactionIndex)
 
         // Bech32 encode
         std::string result = bech32::encode(hrp, dp);
@@ -304,18 +304,18 @@ namespace {
             const std::string &hrp,
             int magicCode,
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex) {
 
         checkBlockHeightRange(blockHeight);
-        checkTransactionPositionRange(transactionPosition);
+        checkTransactionIndexRange(transactionIndex);
         checkTxoIndexRange(txoIndex);
         checkMagicCodeRange(magicCode);
         checkExtendedMagicCode(magicCode);
 
         // ranges have been checked. make unsigned copies of params
         auto bh = static_cast<uint32_t>(blockHeight);
-        auto tp = static_cast<uint32_t>(transactionPosition);
+        auto tp = static_cast<uint32_t>(transactionIndex);
         auto ti = static_cast<uint32_t>(txoIndex);
 
         std::vector<unsigned char> dp(DATA_EXTENDED_SIZE);
@@ -333,10 +333,10 @@ namespace {
         dp[4] |= (bh & 0x7C000u) >> 14u;          // sets 5 bits in 6th 5 bits
         dp[5] |= (bh & 0xF80000u) >> 19u;         // sets 5 bits in 7th 5 bits (24 bits total for blockHeight)
 
-        // set transaction position
+        // set transaction index
         dp[6] |= (tp & 0x1Fu);                    // sets 5 bits in 8th 5 bits
         dp[7] |= (tp & 0x3E0u) >> 5u;             // sets 5 bits in 9th 5 bits
-        dp[8] |= (tp & 0x7C00u) >> 10u;           // sets 5 bits in 10th 5 bits (15 bits total for transactionPosition)
+        dp[8] |= (tp & 0x7C00u) >> 10u;           // sets 5 bits in 10th 5 bits (15 bits total for transactionIndex)
 
         // set txo index
         dp[9] |= ti & 0x1Fu;                      // sets 5 bits in 11th 5 bits
@@ -392,43 +392,43 @@ namespace txref {
 
     std::string encode(
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex,
             bool forceExtended,
             const std::string & hrp) {
 
         if(txoIndex == 0 && !forceExtended)
-            return txrefEncode(hrp, MAGIC_CODE_MAIN, blockHeight, transactionPosition);
+            return txrefEncode(hrp, MAGIC_CODE_MAIN, blockHeight, transactionIndex);
 
-        return txrefExtEncode(hrp, MAGIC_CODE_MAIN_EXTENDED, blockHeight, transactionPosition, txoIndex);
+        return txrefExtEncode(hrp, MAGIC_CODE_MAIN_EXTENDED, blockHeight, transactionIndex, txoIndex);
 
     }
 
     std::string encodeTestnet(
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex,
             bool forceExtended,
             const std::string & hrp) {
 
         if(txoIndex == 0 && !forceExtended)
-            return txrefEncode(hrp, MAGIC_CODE_TEST, blockHeight, transactionPosition);
+            return txrefEncode(hrp, MAGIC_CODE_TEST, blockHeight, transactionIndex);
 
-        return txrefExtEncode(hrp, MAGIC_CODE_TEST_EXTENDED, blockHeight, transactionPosition, txoIndex);
+        return txrefExtEncode(hrp, MAGIC_CODE_TEST_EXTENDED, blockHeight, transactionIndex, txoIndex);
 
     }
 
     std::string encodeRegtest(
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex,
             bool forceExtended,
             const std::string & hrp) {
 
         if(txoIndex == 0 && !forceExtended)
-            return txrefEncode(hrp, MAGIC_CODE_REGTEST, blockHeight, transactionPosition);
+            return txrefEncode(hrp, MAGIC_CODE_REGTEST, blockHeight, transactionIndex);
 
-        return txrefExtEncode(hrp, MAGIC_CODE_REGTEST_EXTENDED, blockHeight, transactionPosition, txoIndex);
+        return txrefExtEncode(hrp, MAGIC_CODE_REGTEST_EXTENDED, blockHeight, transactionIndex, txoIndex);
 
     }
 
@@ -463,7 +463,7 @@ namespace txref {
         result.hrp = bech32DecodedResult.hrp;
         result.magicCode = magicCode;
         extractBlockHeight(result.blockHeight, bech32DecodedResult.dp);
-        extractTransactionPosition(result.transactionPosition, bech32DecodedResult.dp);
+        extractTransactionIndex(result.transactionIndex, bech32DecodedResult.dp);
         extractTxoIndex(result.txoIndex, bech32DecodedResult.dp);
 
         if(bech32DecodedResult.encoding == bech32::Encoding::Bech32m) {
@@ -473,10 +473,10 @@ namespace txref {
             result.encoding = Encoding::Bech32;
             std::string updatedTxref;
             if(result.magicCode == MAGIC_CODE_MAIN_EXTENDED || result.magicCode == MAGIC_CODE_TEST_EXTENDED || result.magicCode == MAGIC_CODE_REGTEST_EXTENDED) {
-                updatedTxref = txrefExtEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionPosition, result.txoIndex);
+                updatedTxref = txrefExtEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionIndex, result.txoIndex);
             }
             else {
-                updatedTxref = txrefEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionPosition);
+                updatedTxref = txrefEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionIndex);
             }
             runningCommentary += "The txref " + result.txref +
                                  " uses an old encoding scheme and should be updated to " + updatedTxref +
@@ -650,7 +650,7 @@ void free_DecodedResult_storage(txref_DecodedResult *decodedResult) {
  * @param txref pointer to memory to copy the output encoded txref
  * @param txreflen number of bytes allocated at txref
  * @param blockHeight the block height of block containing the transaction to encode
- * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param transactionIndex the transaction index within the block of the transaction to encode
  * @param txoIndex the txo index within the transaction of the transaction to encode
  * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
  * @param hrp the "human-readable part" for the bech32 encoding (normally "txtest")
@@ -663,7 +663,7 @@ txref_error txref_encode(
         char * txref,
         size_t txreflen,
         int blockHeight,
-        int transactionPosition,
+        int transactionIndex,
         int txoIndex,
         bool forceExtended,
         const char * hrp,
@@ -680,7 +680,7 @@ txref_error txref_encode(
 
     std::string outputTxref;
     try {
-        outputTxref = txref::encode(blockHeight, transactionPosition, txoIndex, forceExtended, inputHrp);
+        outputTxref = txref::encode(blockHeight, transactionIndex, txoIndex, forceExtended, inputHrp);
     } catch (std::exception &) {
         // todo: convert exception message
         return E_TXREF_UNKNOWN_ERROR;
@@ -705,7 +705,7 @@ txref_error txref_encode(
  * @param txref pointer to memory to copy the output encoded txref
  * @param txreflen number of bytes allocated at txref
  * @param blockHeight the block height of block containing the transaction to encode
- * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param transactionIndex the transaction index within the block of the transaction to encode
  * @param txoIndex the txo index within the transaction of the transaction to encode
  * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
  * @param hrp the "human-readable part" for the bech32 encoding (normally "txtest")
@@ -718,7 +718,7 @@ txref_error txref_encodeTestnet(
         char * txref,
         size_t txreflen,
         int blockHeight,
-        int transactionPosition,
+        int transactionIndex,
         int txoIndex,
         bool forceExtended,
         const char * hrp,
@@ -735,7 +735,7 @@ txref_error txref_encodeTestnet(
 
     std::string outputTxref;
     try {
-        outputTxref = txref::encodeTestnet(blockHeight, transactionPosition, txoIndex, forceExtended, inputHrp);
+        outputTxref = txref::encodeTestnet(blockHeight, transactionIndex, txoIndex, forceExtended, inputHrp);
     } catch (std::exception &) {
         // todo: convert exception message
         return E_TXREF_UNKNOWN_ERROR;
@@ -760,7 +760,7 @@ txref_error txref_encodeTestnet(
  * @param txref pointer to memory to copy the output encoded txref
  * @param txreflen number of bytes allocated at txref
  * @param blockHeight the block height of block containing the transaction to encode
- * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param transactionIndex the transaction index within the block of the transaction to encode
  * @param txoIndex the txo index within the transaction of the transaction to encode
  * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
  * @param hrp the "human-readable part" for the bech32 encoding (normally "txrt")
@@ -773,7 +773,7 @@ txref_error txref_encodeRegtest(
         char * txref,
         size_t txreflen,
         int blockHeight,
-        int transactionPosition,
+        int transactionIndex,
         int txoIndex,
         bool forceExtended,
         const char * hrp,
@@ -790,7 +790,7 @@ txref_error txref_encodeRegtest(
 
     std::string outputTxref;
     try {
-        outputTxref = txref::encodeRegtest(blockHeight, transactionPosition, txoIndex, forceExtended, inputHrp);
+        outputTxref = txref::encodeRegtest(blockHeight, transactionIndex, txoIndex, forceExtended, inputHrp);
     } catch (std::exception &) {
         // todo: convert exception message
         return E_TXREF_UNKNOWN_ERROR;
@@ -844,7 +844,7 @@ txref_error txref_decode(
 
     decodedResult->magicCode = d.magicCode;
     decodedResult->blockHeight = d.blockHeight;
-    decodedResult->transactionPosition = d.transactionPosition;
+    decodedResult->transactionIndex = d.transactionIndex;
     decodedResult->txoIndex = d.txoIndex;
 
     std::copy_n(d.hrp.begin(), d.hrp.size(), decodedResult->hrp);

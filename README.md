@@ -10,48 +10,48 @@ described in [BIP 0136](https://github.com/bitcoin/bips/blob/master/bip-0136.med
 
 See [the full code for the following examples](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/cpp_example.cpp).
 
-#### Create a txref for a mainnet transaction, with only a blockHeight and transactionPosition:
+#### Create a txref for a mainnet transaction, with only a blockHeight and transactionIndex:
 
 ```cpp
     int blockHeight = 10000;
-    int transactionPosition = 2;
+    int transactionIndex = 2;
 
-    std::string txref = txref::encode(blockHeight, transactionPosition);
+    std::string txref = txref::encode(blockHeight, transactionIndex);
 
     assert(txref == "tx1:rq3n-qqzq-qk8k-mzd");
 ```
 
-#### Create a txref for a testnet transaction, with only a blockHeight and transactionPosition:
+#### Create a txref for a testnet transaction, with only a blockHeight and transactionIndex:
 
 ```cpp
     int blockHeight = 10000;
-    int transactionPosition = 4;
+    int transactionIndex = 4;
 
-    std:string txref = txref::encodeTestnet(blockHeight, transactionPosition);
+    std:string txref = txref::encodeTestnet(blockHeight, transactionIndex);
 
     assert(txref == "txtest1:xq3n-qqyq-qhrg-gy3");
 ```
 
-#### Create an extended txref for a mainnet transaction, with a blockHeight and transactionPosition and a specific txoIndex:
+#### Create an extended txref for a mainnet transaction, with a blockHeight and transactionIndex and a specific txoIndex:
 
 ```cpp
     int blockHeight = 10000;
-    int transactionPosition = 2;
+    int transactionIndex = 2;
     int txoIndex = 3;
 
-    std::string txref = txref::encode(blockHeight, transactionPosition, txoIndex);
+    std::string txref = txref::encode(blockHeight, transactionIndex, txoIndex);
 
     assert(txref == "tx1:yq3n-qqzq-qrqq-9z4d-2n");
 ```
 
-#### Create an extended txref for a testnet transaction, with a blockHeight and transactionPosition and a specific txoIndex
+#### Create an extended txref for a testnet transaction, with a blockHeight and transactionIndex and a specific txoIndex
 
 ```cpp
     int blockHeight = 10000;
-    int transactionPosition  = 4;
+    int transactionIndex  = 4;
     int txoIndex = 6;
 
-    std::string txref = txref::encodeTestnet(blockHeight, transactionPosition, txoIndex);
+    std::string txref = txref::encodeTestnet(blockHeight, transactionIndex, txoIndex);
 
     assert(txref == "txtest1:8q3n-qqyq-qxqq-v3x4-ze");
 ```
@@ -68,7 +68,7 @@ See [the full code for the following examples](https://raw.githubusercontent.com
     assert(decodedResult.hrp == "tx");
     assert(decodedResult.magicCode == txref::MAGIC_CODE_MAIN_EXTENDED);
     assert(decodedResult.blockHeight == 10000);
-    assert(decodedResult.transactionPosition == 2);
+    assert(decodedResult.transactionIndex == 2);
     assert(decodedResult.txoIndex == 3);
     assert(decodedResult.encoding == txref::Bech32m);
 ```
@@ -86,7 +86,7 @@ be used instead.
     assert(decodedResult.hrp == "txtest");
     assert(decodedResult.magicCode == txref::MAGIC_CODE_TEST);
     assert(decodedResult.blockHeight == 466793);
-    assert(decodedResult.transactionPosition == 2205);
+    assert(decodedResult.transactionIndex == 2205);
     assert(decodedResult.txoIndex == 0);
     assert(decodedResult.encoding == txref::Bech32);
 
@@ -99,15 +99,15 @@ be used instead.
 
 See [the full code for the following example](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/c_example.cpp).
 
-#### Create a txref for a mainnet transaction, with only a blockHeight and transactionPosition:
+#### Create a txref for a mainnet transaction, with only a blockHeight and transactionIndex:
 
 ```C
     char main_hrp[] = "tx";
     int blockHeight = 10000;
-    int transactionPosition = 2;
+    int transactionIndex = 2;
     int txoIndex = 3;
     char *txref = create_Txref_storage();
-    assert(txref_encode(txref, max_Txref_length(), blockHeight, transactionPosition, txoIndex,
+    assert(txref_encode(txref, max_Txref_length(), blockHeight, transactionIndex, txoIndex,
                         false, main_hrp, sizeof(main_hrp)) == E_TXREF_SUCCESS);
     free_Txref_storage(txref);
 ```
@@ -123,7 +123,7 @@ See [the full code for the following example](https://raw.githubusercontent.com/
     strcpy(txref, "tx1:rq3n-qqzq-qk8k-mzd");
     assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
     assert(decodedResult->blockHeight == 10000);
-    assert(decodedResult->transactionPosition == 2);
+    assert(decodedResult->transactionIndex == 2);
     assert(decodedResult->txoIndex == 0);
     free_Txref_storage(txref);
 ```
