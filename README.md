@@ -1,6 +1,7 @@
 # libtxref
 
-This is a library for converting between bitcoin transaction IDs (TxIDs)
+This is a library for converting between bitcoin transaction IDs (TxIDs), bitcoin transaction
+coordinates (blockHeight, transactionIndex, and txoIndex),
 and "Bech32 Encoded Tx Position References" (TxRefs). TxRefs are
 described in [BIP 0136](https://github.com/bitcoin/bips/blob/master/bip-0136.mediawiki).
 
@@ -99,17 +100,18 @@ be used instead.
 
 See [the full code for the following example](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/c_example.cpp).
 
-#### Create a txref for a mainnet transaction, with only a blockHeight and transactionIndex:
+#### Create a txref for a mainnet transaction
 
 ```C
     char main_hrp[] = "tx";
     int blockHeight = 10000;
     int transactionIndex = 2;
-    int txoIndex = 3;
-    char *txref = create_Txref_storage();
-    assert(txref_encode(txref, max_Txref_length(), blockHeight, transactionIndex, txoIndex,
-                        false, main_hrp, sizeof(main_hrp)) == E_TXREF_SUCCESS);
-    free_Txref_storage(txref);
+    int txoIndex = 0;
+    txref_tstring * tstring = txref_create_tstring();
+    assert(txref_encode(tstring, blockHeight, transactionIndex, txoIndex,
+                        false, main_hrp) == E_TXREF_SUCCESS);
+    assert(strcmp(tstring->string, "tx1:rq3n-qqzq-qk8k-mzd") == 0);
+    txref_free_tstring(tstring);
 ```
 
 ### C Decoding Example
@@ -119,13 +121,11 @@ See [the full code for the following example](https://raw.githubusercontent.com/
 #### Decode a txref
 
 ```C
-    char *txref = create_Txref_storage();
-    strcpy(txref, "tx1:rq3n-qqzq-qk8k-mzd");
+    char txref[] = "tx1:rq3n-qqzq-qk8k-mzd";    
     assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
     assert(decodedResult->blockHeight == 10000);
     assert(decodedResult->transactionIndex == 2);
     assert(decodedResult->txoIndex == 0);
-    free_Txref_storage(txref);
 ```
 
 ## Building libtxref

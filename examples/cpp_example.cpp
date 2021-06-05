@@ -77,7 +77,7 @@ void decodingExamples() {
     assert(decodedResult.magicCode == txref::MAGIC_CODE_MAIN);
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionIndex == 2);
-    assert(decodedResult.encoding == txref::Bech32m);
+    assert(decodedResult.encoding == txref::Encoding::Bech32m);
 
 
     // testnet, standard txref example
@@ -88,7 +88,7 @@ void decodingExamples() {
     assert(decodedResult.magicCode == txref::MAGIC_CODE_TEST);
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionIndex == 4);
-    assert(decodedResult.encoding == txref::Bech32m);
+    assert(decodedResult.encoding == txref::Encoding::Bech32m);
 
 
     // mainnet, extended txref example
@@ -100,7 +100,7 @@ void decodingExamples() {
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionIndex == 2);
     assert(decodedResult.txoIndex == 3);
-    assert(decodedResult.encoding == txref::Bech32m);
+    assert(decodedResult.encoding == txref::Encoding::Bech32m);
 
 
     // testnet, extended txref example
@@ -112,7 +112,7 @@ void decodingExamples() {
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionIndex == 4);
     assert(decodedResult.txoIndex == 6);
-    assert(decodedResult.encoding == txref::Bech32m);
+    assert(decodedResult.encoding == txref::Encoding::Bech32m);
 
 }
 
