@@ -180,6 +180,7 @@ typedef enum txref_error_e
     E_TXREF_UNKNOWN_ERROR,
     E_TXREF_NULL_ARGUMENT,
     E_TXREF_LENGTH_TOO_SHORT,
+    E_TXREF_NO_MEMORY,
     E_TXREF_MAX_ERROR
 } txref_error;
 

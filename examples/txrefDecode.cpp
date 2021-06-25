@@ -18,6 +18,9 @@ int main(int argc, char* argv[])
     if(decodedResult.magicCode == txref::MAGIC_CODE_TEST ||
        decodedResult.magicCode == txref::MAGIC_CODE_TEST_EXTENDED)
         std::cout << "testnet: ";
+    else if(decodedResult.magicCode == txref::MAGIC_CODE_REGTEST ||
+            decodedResult.magicCode == txref::MAGIC_CODE_REGTEST_EXTENDED)
+        std::cout << "regtest: ";
     else
         std::cout << "mainnet: ";
 

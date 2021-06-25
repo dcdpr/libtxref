@@ -26,12 +26,16 @@ int main(int argc, char* argv[])
         std::cout << "mainnet:     " << txref << std::endl;
         txref = txref::encodeTestnet(blockHeight, transactionIndex, txoIndex);
         std::cout << "testnet: " << txref << std::endl;
+        txref = txref::encodeRegtest(blockHeight, transactionIndex, txoIndex);
+        std::cout << "regtest:   " << txref << std::endl;
     }
     else {
         txref = txref::encode(blockHeight, transactionIndex);
         std::cout << "mainnet:     " << txref << std::endl;
         txref = txref::encodeTestnet(blockHeight, transactionIndex);
         std::cout << "testnet: " << txref << std::endl;
+        txref = txref::encodeRegtest(blockHeight, transactionIndex);
+        std::cout << "regtest:   " << txref << std::endl;
     }
 
     return 0;

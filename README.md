@@ -9,7 +9,7 @@ described in [BIP 0136](https://github.com/bitcoin/bips/blob/master/bip-0136.med
 
 ### C++ Encoding Examples
 
-See [the full code for the following examples](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/cpp_example.cpp).
+See [the full code for the following examples](examples/cpp_other_examples.cpp).
 
 #### Create a txref for a mainnet transaction, with only a blockHeight and transactionIndex:
 
@@ -33,7 +33,7 @@ See [the full code for the following examples](https://raw.githubusercontent.com
     assert(txref == "txtest1:xq3n-qqyq-qhrg-gy3");
 ```
 
-#### Create an extended txref for a mainnet transaction, with a blockHeight and transactionIndex and a specific txoIndex:
+#### Create an extended txref for a mainnet transaction, with a blockHeight, transactionIndex, and txoIndex:
 
 ```cpp
     int blockHeight = 10000;
@@ -45,7 +45,7 @@ See [the full code for the following examples](https://raw.githubusercontent.com
     assert(txref == "tx1:yq3n-qqzq-qrqq-9z4d-2n");
 ```
 
-#### Create an extended txref for a testnet transaction, with a blockHeight and transactionIndex and a specific txoIndex
+#### Create an extended txref for a testnet transaction, with a blockHeight, transactionIndex, and txoIndex
 
 ```cpp
     int blockHeight = 10000;
@@ -59,7 +59,7 @@ See [the full code for the following examples](https://raw.githubusercontent.com
 
 ### C++ Decoding Examples
 
-See [the full code for the following examples](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/cpp_example.cpp).
+See [the full code for the following examples](examples/cpp_other_examples.cpp).
 
 #### Decode a txref
 
@@ -71,7 +71,7 @@ See [the full code for the following examples](https://raw.githubusercontent.com
     assert(decodedResult.blockHeight == 10000);
     assert(decodedResult.transactionIndex == 2);
     assert(decodedResult.txoIndex == 3);
-    assert(decodedResult.encoding == txref::Bech32m);
+    assert(decodedResult.encoding == txref::Encoding::Bech32m);
 ```
 
 #### Decode an "original" txref
@@ -89,43 +89,64 @@ be used instead.
     assert(decodedResult.blockHeight == 466793);
     assert(decodedResult.transactionIndex == 2205);
     assert(decodedResult.txoIndex == 0);
-    assert(decodedResult.encoding == txref::Bech32);
+    assert(decodedResult.encoding == txref::Encoding::Bech32); // note: Bech32 rather than Bech32m
 
-    std::cout << decodedResult.getCommentary() << "\n";
+    std::cout << decodedResult.commentary << "\n";
     // prints:
     // "The txref txtest1:xjk0-uqay-zat0-dz8 uses an old encoding scheme and should be updated to txtest1:xjk0-uqay-zghl-p89 See https://github.com/dcdpr/libtxref#regarding-bech32-checksums for more information."
 ```
 
 ### C Encoding Example
 
-See [the full code for the following example](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/c_example.cpp).
+See [the full code for the following example](examples/c_usage_encoding_example.c).
 
 #### Create a txref for a mainnet transaction
 
 ```C
-    char main_hrp[] = "tx";
     int blockHeight = 10000;
     int transactionIndex = 2;
-    int txoIndex = 0;
+    int txoIndex = 3;
+    char main_hrp[] = "tx";
+    
     txref_tstring * tstring = txref_create_tstring();
-    assert(txref_encode(tstring, blockHeight, transactionIndex, txoIndex,
-                        false, main_hrp) == E_TXREF_SUCCESS);
-    assert(strcmp(tstring->string, "tx1:rq3n-qqzq-qk8k-mzd") == 0);
+    if(!tstring)
+        return E_TXREF_NO_MEMORY;
+
+    txref_error err = txref_encode(tstring, blockHeight, transactionIndex, txoIndex, false, main_hrp);
+    if(err != E_TXREF_SUCCESS) {
+        txref_free_tstring(tstring);
+        return err;
+    }
+    
+    assert(strcmp(tstring->string, "tx1:yq3n-qqzq-qrqq-9z4d-2n") == 0);
+    
     txref_free_tstring(tstring);
 ```
 
 ### C Decoding Example
 
-See [the full code for the following example](https://raw.githubusercontent.com/dcdpr/libtxref/master/examples/c_example.cpp).
+See [the full code for the following example](examples/c_usage_decoding_example.c).
 
 #### Decode a txref
 
 ```C
-    char txref[] = "tx1:rq3n-qqzq-qk8k-mzd";    
-    assert(txref_decode(decodedResult, txref, strlen(txref) + 1) == E_TXREF_SUCCESS);
+    char txref[] = "tx1:yq3n-qqzq-qrqq-9z4d-2n";
+
+    txref_DecodedResult *decodedResult = txref_create_DecodedResult();
+    if(!decodedResult)
+        return E_TXREF_NO_MEMORY;
+    
+    txref_error err = txref_decode(decodedResult, txref);
+    if(err != E_TXREF_SUCCESS) {
+        txref_free_DecodedResult(decodedResult);
+        return err;
+    }
+    
     assert(decodedResult->blockHeight == 10000);
     assert(decodedResult->transactionIndex == 2);
-    assert(decodedResult->txoIndex == 0);
+    assert(decodedResult->txoIndex == 3);
+
+    txref_free_DecodedResult(decodedResult);
 ```
 
 ## Building libtxref
@@ -150,10 +171,10 @@ You can also run all the tests:
 make test
 ```
 
-### Installing prerequirements
+### Installing prerequisites
 
 If the above doesn't work, you probably need to install some
-prerequirements. For example, on a fresh Debian Stretch system:
+prerequisites. For example, on a fresh Debian 10 ("buster") system:
 
 ```
 sudo apt-get update

@@ -114,6 +114,18 @@ void decodingExamples() {
     assert(decodedResult.txoIndex == 6);
     assert(decodedResult.encoding == txref::Encoding::Bech32m);
 
+
+    // example of decoding an "original" which used the old Bech32 encoding
+    decodedResult = txref::decode("txtest1:xjk0-uqay-zat0-dz8");
+
+    assert(decodedResult.hrp == "txtest");
+    assert(decodedResult.magicCode == txref::MAGIC_CODE_TEST);
+    assert(decodedResult.blockHeight == 466793);
+    assert(decodedResult.transactionIndex == 2205);
+    assert(decodedResult.txoIndex == 0);
+    assert(decodedResult.encoding == txref::Encoding::Bech32); // note: Bech32 rather than Bech32m
+    assert(decodedResult.commentary.find("txtest1:xjk0-uqay-zat0-dz8 uses an old encoding scheme and should be updated") != std::string::npos);
+
 }
 
 int main() {
