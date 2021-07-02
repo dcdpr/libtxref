@@ -14,7 +14,7 @@ namespace {
 
     const int MAX_BLOCK_HEIGHT         = 0xFFFFFF; // 16777215
 
-    const int MAX_TRANSACTION_POSITION = 0x7FFF;   // 32767
+    const int MAX_TRANSACTION_INDEX    = 0x7FFF;   // 32767
 
     const int MAX_TXO_INDEX            = 0x7FFF;   // 32767
 
@@ -49,10 +49,10 @@ namespace {
             throw std::runtime_error("block height is too large");
     }
 
-    // a transaction's position can only be in a certain range
-    void checkTransactionPositionRange(int transactionPosition) {
-        if(transactionPosition < 0 || transactionPosition > MAX_TRANSACTION_POSITION)
-            throw std::runtime_error("transaction position is too large");
+    // a transaction's index can only be in a certain range
+    void checkTransactionIndexRange(int transactionIndex) {
+        if(transactionIndex < 0 || transactionIndex > MAX_TRANSACTION_INDEX)
+            throw std::runtime_error("transaction index is too large");
     }
 
     // a TXO's index can only be in a certain range
@@ -69,9 +69,9 @@ namespace {
 
     // check that the magic code is for one of the extended txrefs
     void checkExtendedMagicCode(int magicCode) {
-        if(magicCode != txref::MAGIC_BTC_MAIN_EXTENDED &&
-           magicCode != txref::MAGIC_BTC_TEST_EXTENDED &&
-           magicCode != txref::MAGIC_BTC_REGTEST_EXTENDED)
+        if(magicCode != txref::MAGIC_CODE_MAIN_EXTENDED &&
+           magicCode != txref::MAGIC_CODE_TEST_EXTENDED &&
+           magicCode != txref::MAGIC_CODE_REGTEST_EXTENDED)
             throw std::runtime_error("magic code does not support extended txrefs");
     }
 
@@ -173,15 +173,15 @@ namespace {
         }
     }
 
-    // extract the transaction position from the decoded data part
-    void extractTransactionPosition(int & transactionPosition, const std::vector<unsigned char> &dp) {
+    // extract the transaction index from the decoded data part
+    void extractTransactionIndex(int & transactionIndex, const std::vector<unsigned char> &dp) {
         uint8_t version = 0;
         extractVersion(version, dp);
 
         if(version == 0) {
-            transactionPosition = dp[6];
-            transactionPosition |= (dp[7] << 5u);
-            transactionPosition |= (dp[8] << 10u);
+            transactionIndex = dp[6];
+            transactionIndex |= (dp[7] << 5u);
+            transactionIndex |= (dp[8] << 10u);
         }
         else {
             std::stringstream ss;
@@ -261,15 +261,15 @@ namespace {
             const std::string &hrp,
             int magicCode,
             int blockHeight,
-            int transactionPosition) {
+            int transactionIndex) {
 
         checkBlockHeightRange(blockHeight);
-        checkTransactionPositionRange(transactionPosition);
+        checkTransactionIndexRange(transactionIndex);
         checkMagicCodeRange(magicCode);
 
         // ranges have been checked. make unsigned copies of params
         auto bh = static_cast<uint32_t>(blockHeight);
-        auto tp = static_cast<uint32_t>(transactionPosition);
+        auto tp = static_cast<uint32_t>(transactionIndex);
 
         std::vector<unsigned char> dp(DATA_SIZE);
 
@@ -286,10 +286,10 @@ namespace {
         dp[4] |= (bh & 0x7C000u) >> 14u;          // sets 5 bits in 5th 5 bits
         dp[5] |= (bh & 0xF80000u) >> 19u;         // sets 5 bits in 6th 5 bits (24 bits total for blockHeight)
 
-        // set transaction position
+        // set transaction index
         dp[6] |= (tp & 0x1Fu);                    // sets 5 bits in 7th 5 bits
         dp[7] |= (tp & 0x3E0u) >> 5u;             // sets 5 bits in 8th 5 bits
-        dp[8] |= (tp & 0x7C00u) >> 10u;           // sets 5 bits in 9th 5 bits (15 bits total for transactionPosition)
+        dp[8] |= (tp & 0x7C00u) >> 10u;           // sets 5 bits in 9th 5 bits (15 bits total for transactionIndex)
 
         // Bech32 encode
         std::string result = bech32::encode(hrp, dp);
@@ -304,18 +304,18 @@ namespace {
             const std::string &hrp,
             int magicCode,
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex) {
 
         checkBlockHeightRange(blockHeight);
-        checkTransactionPositionRange(transactionPosition);
+        checkTransactionIndexRange(transactionIndex);
         checkTxoIndexRange(txoIndex);
         checkMagicCodeRange(magicCode);
         checkExtendedMagicCode(magicCode);
 
         // ranges have been checked. make unsigned copies of params
         auto bh = static_cast<uint32_t>(blockHeight);
-        auto tp = static_cast<uint32_t>(transactionPosition);
+        auto tp = static_cast<uint32_t>(transactionIndex);
         auto ti = static_cast<uint32_t>(txoIndex);
 
         std::vector<unsigned char> dp(DATA_EXTENDED_SIZE);
@@ -333,10 +333,10 @@ namespace {
         dp[4] |= (bh & 0x7C000u) >> 14u;          // sets 5 bits in 6th 5 bits
         dp[5] |= (bh & 0xF80000u) >> 19u;         // sets 5 bits in 7th 5 bits (24 bits total for blockHeight)
 
-        // set transaction position
+        // set transaction index
         dp[6] |= (tp & 0x1Fu);                    // sets 5 bits in 8th 5 bits
         dp[7] |= (tp & 0x3E0u) >> 5u;             // sets 5 bits in 9th 5 bits
-        dp[8] |= (tp & 0x7C00u) >> 10u;           // sets 5 bits in 10th 5 bits (15 bits total for transactionPosition)
+        dp[8] |= (tp & 0x7C00u) >> 10u;           // sets 5 bits in 10th 5 bits (15 bits total for transactionIndex)
 
         // set txo index
         dp[9] |= ti & 0x1Fu;                      // sets 5 bits in 11th 5 bits
@@ -392,43 +392,43 @@ namespace txref {
 
     std::string encode(
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex,
             bool forceExtended,
             const std::string & hrp) {
 
         if(txoIndex == 0 && !forceExtended)
-            return txrefEncode(hrp, MAGIC_BTC_MAIN, blockHeight, transactionPosition);
+            return txrefEncode(hrp, MAGIC_CODE_MAIN, blockHeight, transactionIndex);
 
-        return txrefExtEncode(hrp, MAGIC_BTC_MAIN_EXTENDED, blockHeight, transactionPosition, txoIndex);
+        return txrefExtEncode(hrp, MAGIC_CODE_MAIN_EXTENDED, blockHeight, transactionIndex, txoIndex);
 
     }
 
     std::string encodeTestnet(
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex,
             bool forceExtended,
             const std::string & hrp) {
 
         if(txoIndex == 0 && !forceExtended)
-            return txrefEncode(hrp, MAGIC_BTC_TEST, blockHeight, transactionPosition);
+            return txrefEncode(hrp, MAGIC_CODE_TEST, blockHeight, transactionIndex);
 
-        return txrefExtEncode(hrp, MAGIC_BTC_TEST_EXTENDED, blockHeight, transactionPosition, txoIndex);
+        return txrefExtEncode(hrp, MAGIC_CODE_TEST_EXTENDED, blockHeight, transactionIndex, txoIndex);
 
     }
 
     std::string encodeRegtest(
             int blockHeight,
-            int transactionPosition,
+            int transactionIndex,
             int txoIndex,
             bool forceExtended,
             const std::string & hrp) {
 
         if(txoIndex == 0 && !forceExtended)
-            return txrefEncode(hrp, MAGIC_BTC_REGTEST, blockHeight, transactionPosition);
+            return txrefEncode(hrp, MAGIC_CODE_REGTEST, blockHeight, transactionIndex);
 
-        return txrefExtEncode(hrp, MAGIC_BTC_REGTEST_EXTENDED, blockHeight, transactionPosition, txoIndex);
+        return txrefExtEncode(hrp, MAGIC_CODE_REGTEST_EXTENDED, blockHeight, transactionIndex, txoIndex);
 
     }
 
@@ -463,7 +463,7 @@ namespace txref {
         result.hrp = bech32DecodedResult.hrp;
         result.magicCode = magicCode;
         extractBlockHeight(result.blockHeight, bech32DecodedResult.dp);
-        extractTransactionPosition(result.transactionPosition, bech32DecodedResult.dp);
+        extractTransactionIndex(result.transactionIndex, bech32DecodedResult.dp);
         extractTxoIndex(result.txoIndex, bech32DecodedResult.dp);
 
         if(bech32DecodedResult.encoding == bech32::Encoding::Bech32m) {
@@ -472,11 +472,11 @@ namespace txref {
         else if(bech32DecodedResult.encoding == bech32::Encoding::Bech32) {
             result.encoding = Encoding::Bech32;
             std::string updatedTxref;
-            if(result.magicCode == MAGIC_BTC_MAIN_EXTENDED || result.magicCode == MAGIC_BTC_TEST_EXTENDED || result.magicCode == MAGIC_BTC_REGTEST_EXTENDED) {
-                updatedTxref = txrefExtEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionPosition, result.txoIndex);
+            if(result.magicCode == MAGIC_CODE_MAIN_EXTENDED || result.magicCode == MAGIC_CODE_TEST_EXTENDED || result.magicCode == MAGIC_CODE_REGTEST_EXTENDED) {
+                updatedTxref = txrefExtEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionIndex, result.txoIndex);
             }
             else {
-                updatedTxref = txrefEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionPosition);
+                updatedTxref = txrefEncode(result.hrp, result.magicCode, result.blockHeight, result.transactionIndex);
             }
             runningCommentary += "The txref " + result.txref +
                                  " uses an old encoding scheme and should be updated to " + updatedTxref +
@@ -561,39 +561,38 @@ const char * txref_strerror(txref_error error_code) {
 }
 
 /**
- * Get MAX length any txref can be: main/testnet, regular or extended
- *
- * The length includes the final '\0' character
- *
- * @return MAX length for any txref
- */
-extern "C"
-size_t max_Txref_length() {
-    return static_cast<size_t>(txref::limits::TXREF_MAX_LENGTH + 1);
-}
-
-
-/**
- * Allocates memory for a txref and returns a pointer.
+ * Allocates memory for a txref_tstring and returns a pointer.
  *
  * This memory will be able to handle any size txref.
  *
- * This memory must be freed using the free_Txref_storage function.
+ * This memory must be freed using the txref_free_tstring function.
  *
- * @return a pointer to a new txref, or NULL if error
+ * @return a pointer to a new txref_tstring, or NULL if error
  */
 extern "C"
-char * create_Txref_storage() {
+txref_tstring * txref_create_tstring() {
+    auto tstring = static_cast<txref_tstring *>(malloc(sizeof(txref_tstring)));
+    if(tstring == nullptr)
+        return nullptr;
     // allocate enough memory for the largest possible txref string, plus 1 for '\0'
-    return static_cast<char *> (calloc(max_Txref_length(), 1));
+    tstring->length = txref::limits::TXREF_MAX_LENGTH;
+    tstring->string = static_cast<char *> (calloc(tstring->length + 1, 1));
+    if(tstring->string == nullptr) {
+        txref_free_tstring(tstring);
+        return nullptr;
+    }
+    return tstring;
 }
 
 /**
- * Frees memory for a txref
+ * Frees memory for a txref_tstring
  */
  extern "C"
-void free_Txref_storage(char *txref) {
-     free(txref);
+void txref_free_tstring(txref_tstring *tstring) {
+    if(tstring == nullptr)
+        return;
+    free(tstring->string);
+    free(tstring);
  }
 
 /**
@@ -601,26 +600,31 @@ void free_Txref_storage(char *txref) {
  *
  * This struct will be able to handle any size txref.
  *
- * This memory must be freed using the free_DecodedResult_storage function.
+ * This memory must be freed using the txref_free_DecodedResult function.
  *
  * @return a pointer to a new txref_DecodedResult struct, or NULL if error
  */
 extern "C"
-txref_DecodedResult * create_DecodedResult_storage() {
+txref_DecodedResult * txref_create_DecodedResult() {
     auto decodedResult =
             static_cast<txref_DecodedResult *> (calloc(1, sizeof(txref_DecodedResult)));
     if(decodedResult == nullptr)
         return nullptr;
-    decodedResult->txreflen = size_t(txref::limits::TXREF_MAX_LENGTH) + 1;
-    decodedResult->txref = create_Txref_storage();
+    // allocate enough memory for the largest possible txref string, plus 1 for '\0'
+    size_t txreflen = txref::limits::TXREF_MAX_LENGTH;
+    decodedResult->txref = static_cast<char *> (calloc(txreflen + 1, 1));
     if(decodedResult->txref == nullptr) {
         free(decodedResult);
         return nullptr;
     }
-    decodedResult->hrplen = (txref::limits::TXREF_EXT_STRING_MIN_LENGTH_TESTNET - txref::limits::TXREF_EXT_STRING_NO_HRP_MIN_LENGTH) + 1;
-    decodedResult->hrp = static_cast<char *> (calloc(decodedResult->hrplen, 1));
+    // allocate enough memory for the largest possible hrp string (txtest), plus 1 for '\0'
+    size_t hrplen =
+            txref::limits::TXREF_EXT_STRING_MIN_LENGTH_TESTNET -
+            txref::limits::TXREF_EXT_STRING_NO_HRP_MIN_LENGTH -
+            1; // - 1 for the separator character '1' which is included in TXREF_EXT_STRING_MIN_LENGTH_TESTNET
+    decodedResult->hrp = static_cast<char *> (calloc(hrplen + 1, 1));
     if(decodedResult->hrp == nullptr) {
-        free_Txref_storage(decodedResult->txref);
+        free(decodedResult->txref);
         free(decodedResult);
         return nullptr;
     }
@@ -633,9 +637,9 @@ txref_DecodedResult * create_DecodedResult_storage() {
  * Frees memory for a txref_DecodedResult struct.
  */
 extern "C"
-void free_DecodedResult_storage(txref_DecodedResult *decodedResult) {
+void txref_free_DecodedResult(txref_DecodedResult *decodedResult) {
     free(decodedResult->hrp);
-    free_Txref_storage(decodedResult->txref);
+    free(decodedResult->txref);
     free(decodedResult->commentary);
     free(decodedResult);
 }
@@ -647,50 +651,46 @@ void free_DecodedResult_storage(txref_DecodedResult *decodedResult) {
  * reference is returned (txref-ext). If txoIndex is zero, but
  * forceExtended=true, then an extended reference is returned (txref-ext).
  *
- * @param txref pointer to memory to copy the output encoded txref
- * @param txreflen number of bytes allocated at txref
+ * @param tstring pointer to a txref_tstring struct to copy the encoded txref
  * @param blockHeight the block height of block containing the transaction to encode
- * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param transactionIndex the transaction index within the block of the transaction to encode
  * @param txoIndex the txo index within the transaction of the transaction to encode
  * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
  * @param hrp the "human-readable part" for the bech32 encoding (normally "txtest")
- * @param hrplen the length of the "human-readable part" string
  *
  * @return E_TXREF_SUCCESS on success, others on error
  */
 extern "C"
 txref_error txref_encode(
-        char * txref,
-        size_t txreflen,
+        txref_tstring * tstring,
         int blockHeight,
-        int transactionPosition,
+        int transactionIndex,
         int txoIndex,
         bool forceExtended,
-        const char * hrp,
-        size_t hrplen) {
+        const char * hrp) {
 
-    if(txref == nullptr)
+    if(tstring == nullptr)
+        return E_TXREF_NULL_ARGUMENT;
+    if(tstring->string == nullptr)
         return E_TXREF_NULL_ARGUMENT;
     if(hrp == nullptr)
         return E_TXREF_NULL_ARGUMENT;
 
     std::string inputHrp(hrp);
-    if(inputHrp.size() > hrplen-1)
-        return E_TXREF_LENGTH_TOO_SHORT;
 
     std::string outputTxref;
     try {
-        outputTxref = txref::encode(blockHeight, transactionPosition, txoIndex, forceExtended, inputHrp);
+        outputTxref = txref::encode(blockHeight, transactionIndex, txoIndex, forceExtended, inputHrp);
     } catch (std::exception &) {
         // todo: convert exception message
         return E_TXREF_UNKNOWN_ERROR;
     }
 
-    if(outputTxref.size() > txreflen-1)
+    if(outputTxref.size() > tstring->length)
         return E_TXREF_LENGTH_TOO_SHORT;
 
-    std::copy_n(outputTxref.begin(), outputTxref.size(), txref);
-    txref[outputTxref.size()] = '\0';
+    std::copy_n(outputTxref.begin(), outputTxref.size(), tstring->string);
+    tstring->string[outputTxref.size()] = '\0';
 
     return E_TXREF_SUCCESS;
 }
@@ -702,50 +702,46 @@ txref_error txref_encode(
  * reference is returned (txref-ext). If txoIndex is zero, but
  * forceExtended=true, then an extended reference is returned (txref-ext).
  *
- * @param txref pointer to memory to copy the output encoded txref
- * @param txreflen number of bytes allocated at txref
+ * @param tstring pointer to a txref_tstring struct to copy the encoded txref
  * @param blockHeight the block height of block containing the transaction to encode
- * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param transactionIndex the transaction index within the block of the transaction to encode
  * @param txoIndex the txo index within the transaction of the transaction to encode
  * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
  * @param hrp the "human-readable part" for the bech32 encoding (normally "txtest")
- * @param hrplen the length of the "human-readable part" string
  *
  * @return E_TXREF_SUCCESS on success, others on error
  */
 extern "C"
 txref_error txref_encodeTestnet(
-        char * txref,
-        size_t txreflen,
+        txref_tstring * tstring,
         int blockHeight,
-        int transactionPosition,
+        int transactionIndex,
         int txoIndex,
         bool forceExtended,
-        const char * hrp,
-        size_t hrplen) {
+        const char * hrp) {
 
-    if(txref == nullptr)
+    if(tstring == nullptr)
+        return E_TXREF_NULL_ARGUMENT;
+    if(tstring->string == nullptr)
         return E_TXREF_NULL_ARGUMENT;
     if(hrp == nullptr)
         return E_TXREF_NULL_ARGUMENT;
 
     std::string inputHrp(hrp);
-    if(inputHrp.size() > hrplen-1)
-        return E_TXREF_LENGTH_TOO_SHORT;
 
     std::string outputTxref;
     try {
-        outputTxref = txref::encodeTestnet(blockHeight, transactionPosition, txoIndex, forceExtended, inputHrp);
+        outputTxref = txref::encodeTestnet(blockHeight, transactionIndex, txoIndex, forceExtended, inputHrp);
     } catch (std::exception &) {
         // todo: convert exception message
         return E_TXREF_UNKNOWN_ERROR;
     }
 
-    if(outputTxref.size() > txreflen-1)
+    if(outputTxref.size() > tstring->length)
         return E_TXREF_LENGTH_TOO_SHORT;
 
-    std::copy_n(outputTxref.begin(), outputTxref.size(), txref);
-    txref[outputTxref.size()] = '\0';
+    std::copy_n(outputTxref.begin(), outputTxref.size(), tstring->string);
+    tstring->string[outputTxref.size()] = '\0';
 
     return E_TXREF_SUCCESS;
 }
@@ -757,50 +753,46 @@ txref_error txref_encodeTestnet(
  * reference is returned (txref-ext). If txoIndex is zero, but
  * forceExtended=true, then an extended reference is returned (txref-ext).
  *
- * @param txref pointer to memory to copy the output encoded txref
- * @param txreflen number of bytes allocated at txref
+ * @param tstring pointer to a txref_tstring struct to copy the encoded txref
  * @param blockHeight the block height of block containing the transaction to encode
- * @param transactionPosition the transaction position within the block of the transaction to encode
+ * @param transactionIndex the transaction index within the block of the transaction to encode
  * @param txoIndex the txo index within the transaction of the transaction to encode
  * @param forceExtended if true, will encode an extended txref, even if txoIndex is 0
  * @param hrp the "human-readable part" for the bech32 encoding (normally "txrt")
- * @param hrplen the length of the "human-readable part" string
  *
  * @return E_TXREF_SUCCESS on success, others on error
  */
 extern "C"
 txref_error txref_encodeRegtest(
-        char * txref,
-        size_t txreflen,
+        txref_tstring * tstring,
         int blockHeight,
-        int transactionPosition,
+        int transactionIndex,
         int txoIndex,
         bool forceExtended,
-        const char * hrp,
-        size_t hrplen) {
+        const char * hrp) {
 
-    if(txref == nullptr)
+    if(tstring == nullptr)
+        return E_TXREF_NULL_ARGUMENT;
+    if(tstring->string == nullptr)
         return E_TXREF_NULL_ARGUMENT;
     if(hrp == nullptr)
         return E_TXREF_NULL_ARGUMENT;
 
     std::string inputHrp(hrp);
-    if(inputHrp.size() > hrplen-1)
-        return E_TXREF_LENGTH_TOO_SHORT;
 
     std::string outputTxref;
     try {
-        outputTxref = txref::encodeRegtest(blockHeight, transactionPosition, txoIndex, forceExtended, inputHrp);
+        outputTxref = txref::encodeRegtest(blockHeight, transactionIndex, txoIndex, forceExtended, inputHrp);
     } catch (std::exception &) {
         // todo: convert exception message
         return E_TXREF_UNKNOWN_ERROR;
     }
 
-    if(outputTxref.size() > txreflen-1)
+    if(outputTxref.size() > tstring->length)
         return E_TXREF_LENGTH_TOO_SHORT;
 
-    std::copy_n(outputTxref.begin(), outputTxref.size(), txref);
-    txref[outputTxref.size()] = '\0';
+    std::copy_n(outputTxref.begin(), outputTxref.size(), tstring->string);
+    tstring->string[outputTxref.size()] = '\0';
 
     return E_TXREF_SUCCESS;
 }
@@ -818,8 +810,7 @@ txref_error txref_encodeRegtest(
 extern "C"
 txref_error txref_decode(
         txref_DecodedResult *decodedResult,
-        const char * txref,
-        size_t txreflen) {
+        const char * txref) {
 
     if(decodedResult == nullptr)
         return E_TXREF_NULL_ARGUMENT;
@@ -831,8 +822,6 @@ txref_error txref_decode(
         return E_TXREF_NULL_ARGUMENT;
 
     std::string inputTxref(txref);
-    if(inputTxref.size() > txreflen-1)
-        return E_TXREF_LENGTH_TOO_SHORT;
 
     txref::DecodedResult d;
     try {
@@ -844,7 +833,7 @@ txref_error txref_decode(
 
     decodedResult->magicCode = d.magicCode;
     decodedResult->blockHeight = d.blockHeight;
-    decodedResult->transactionPosition = d.transactionPosition;
+    decodedResult->transactionIndex = d.transactionIndex;
     decodedResult->txoIndex = d.txoIndex;
 
     std::copy_n(d.hrp.begin(), d.hrp.size(), decodedResult->hrp);

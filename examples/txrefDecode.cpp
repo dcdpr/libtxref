@@ -15,14 +15,17 @@ int main(int argc, char* argv[])
 
     txref::DecodedResult decodedResult = txref::decode(txref);
 
-    if(decodedResult.magicCode == txref::MAGIC_BTC_TEST ||
-       decodedResult.magicCode == txref::MAGIC_BTC_TEST_EXTENDED)
+    if(decodedResult.magicCode == txref::MAGIC_CODE_TEST ||
+       decodedResult.magicCode == txref::MAGIC_CODE_TEST_EXTENDED)
         std::cout << "testnet: ";
+    else if(decodedResult.magicCode == txref::MAGIC_CODE_REGTEST ||
+            decodedResult.magicCode == txref::MAGIC_CODE_REGTEST_EXTENDED)
+        std::cout << "regtest: ";
     else
         std::cout << "mainnet: ";
 
     std::cout << " blockHeight: " << decodedResult.blockHeight;
-    std::cout << " transactionPosition: " << decodedResult.transactionPosition;
+    std::cout << " transactionIndex: " << decodedResult.transactionIndex;
     std::cout << " txoIndex: " << decodedResult.txoIndex;
     std::cout << std::endl;
 
