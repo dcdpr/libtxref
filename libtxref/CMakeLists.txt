@@ -14,3 +14,8 @@ target_compile_options(txref PRIVATE ${DCD_CXX_FLAGS})
 set_target_properties(txref PROPERTIES CXX_EXTENSIONS OFF)
 
 target_link_libraries(txref PUBLIC bech32)
+
+if(INSTALL_LIBTXREF)
+    install (TARGETS txref DESTINATION lib)
+    install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/../include/libtxref/libtxref.h DESTINATION include)
+endif()
