@@ -1,4 +1,4 @@
-#include "libtxref.h"
+#include "txref.h"
 #include <string>
 
 // make sure we can check these examples even when building a release version

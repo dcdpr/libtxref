@@ -9,7 +9,7 @@
 #pragma clang diagnostic pop
 #pragma GCC diagnostic pop
 
-#include "libtxref.h"
+#include "txref.h"
 
 // In this "API" test file, we should only be referring to symbols in the "txref" namespace.
 
