@@ -1,6 +1,6 @@
 
 #include "libtxref.h"
-#include "libbech32.h"
+#include "bech32.h"
 #include <algorithm>
 #include <vector>
 #include <stdexcept>
