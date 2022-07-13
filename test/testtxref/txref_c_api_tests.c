@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "libtxref.h"
+#include "txref.h"
 
 // make sure we can run these tests even when building a release version
 #undef NDEBUG

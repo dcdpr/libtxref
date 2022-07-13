@@ -1,4 +1,4 @@
-#include "libtxref.h"
+#include "txref.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>

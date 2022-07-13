@@ -205,7 +205,7 @@ extern const char * txref_strerror(txref_error error_code);
  *
  * @return a pointer to a new txref, or NULL if error
  */
-extern txref_tstring * txref_create_tstring();
+extern txref_tstring * txref_create_tstring(void);
 
 /**
  * Frees memory for a txref_tstring
@@ -221,7 +221,7 @@ extern void txref_free_tstring(txref_tstring * tstring);
  *
  * @return a pointer to a new txref_DecodedResult struct, or NULL if error
  */
-extern txref_DecodedResult * txref_create_DecodedResult();
+extern txref_DecodedResult * txref_create_DecodedResult(void);
 
 /**
  * Frees memory for a txref_DecodedResult struct.

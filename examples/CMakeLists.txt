@@ -1,30 +1,27 @@
 add_executable(txref_cpp_other_examples cpp_other_examples.cpp)
 
 target_compile_features(txref_cpp_other_examples PRIVATE cxx_std_11)
-target_compile_options(txref_cpp_other_examples PRIVATE ${DCD_CXX_FLAGS})
 set_target_properties(txref_cpp_other_examples PROPERTIES CXX_EXTENSIONS OFF)
 
-target_link_libraries(txref_cpp_other_examples bech32 txref)
+target_link_libraries(txref_cpp_other_examples txref)
 
 #
 
 add_executable(txref_cpp_usage_encoding_example cpp_usage_encoding_example.cpp)
 
 target_compile_features(txref_cpp_usage_encoding_example PRIVATE cxx_std_11)
-target_compile_options(txref_cpp_usage_encoding_example PRIVATE ${DCD_CXX_FLAGS})
 set_target_properties(txref_cpp_usage_encoding_example PROPERTIES CXX_EXTENSIONS OFF)
 
-target_link_libraries(txref_cpp_usage_encoding_example bech32 txref)
+target_link_libraries(txref_cpp_usage_encoding_example txref)
 
 #
 
 add_executable(txref_cpp_usage_decoding_example cpp_usage_decoding_example.cpp)
 
 target_compile_features(txref_cpp_usage_decoding_example PRIVATE cxx_std_11)
-target_compile_options(txref_cpp_usage_decoding_example PRIVATE ${DCD_CXX_FLAGS})
 set_target_properties(txref_cpp_usage_decoding_example PROPERTIES CXX_EXTENSIONS OFF)
 
-target_link_libraries(txref_cpp_usage_decoding_example bech32 txref)
+target_link_libraries(txref_cpp_usage_decoding_example txref)
 
 #
 
@@ -33,7 +30,7 @@ add_executable(txref_c_other_examples c_other_examples.c)
 target_compile_features(txref_c_other_examples PRIVATE c_std_99)
 set_target_properties(txref_c_other_examples PROPERTIES C_EXTENSIONS OFF)
 
-target_link_libraries(txref_c_other_examples bech32 txref)
+target_link_libraries(txref_c_other_examples txref)
 
 #
 
@@ -42,7 +39,7 @@ add_executable(txref_c_usage_encoding_example c_usage_encoding_example.c)
 target_compile_features(txref_c_usage_encoding_example PRIVATE c_std_99)
 set_target_properties(txref_c_usage_encoding_example PROPERTIES C_EXTENSIONS OFF)
 
-target_link_libraries(txref_c_usage_encoding_example bech32 txref)
+target_link_libraries(txref_c_usage_encoding_example txref)
 
 #
 
@@ -51,24 +48,22 @@ add_executable(txref_c_usage_decoding_example c_usage_decoding_example.c)
 target_compile_features(txref_c_usage_decoding_example PRIVATE c_std_99)
 set_target_properties(txref_c_usage_decoding_example PROPERTIES C_EXTENSIONS OFF)
 
-target_link_libraries(txref_c_usage_decoding_example bech32 txref)
+target_link_libraries(txref_c_usage_decoding_example txref)
 
 #
 
 add_executable(txrefEncode txrefEncode.cpp)
 
 target_compile_features(txrefEncode PRIVATE cxx_std_11)
-target_compile_options(txrefEncode PRIVATE ${DCD_CXX_FLAGS})
 set_target_properties(txrefEncode PROPERTIES CXX_EXTENSIONS OFF)
 
-target_link_libraries(txrefEncode bech32 txref)
+target_link_libraries(txrefEncode txref)
 
 #
 
 add_executable(txrefDecode txrefDecode.cpp)
 
 target_compile_features(txrefDecode PRIVATE cxx_std_11)
-target_compile_options(txrefDecode PRIVATE ${DCD_CXX_FLAGS})
 set_target_properties(txrefDecode PROPERTIES CXX_EXTENSIONS OFF)
 
-target_link_libraries(txrefDecode bech32 txref)
+target_link_libraries(txrefDecode txref)

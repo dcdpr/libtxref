@@ -1,6 +1,6 @@
 
-#include "libtxref.h"
-#include "libbech32.h"
+#include "txref.h"
+#include "bech32.h"
 #include <algorithm>
 #include <vector>
 #include <stdexcept>
@@ -570,7 +570,7 @@ const char * txref_strerror(txref_error error_code) {
  * @return a pointer to a new txref_tstring, or NULL if error
  */
 extern "C"
-txref_tstring * txref_create_tstring() {
+txref_tstring * txref_create_tstring(void) {
     auto tstring = static_cast<txref_tstring *>(malloc(sizeof(txref_tstring)));
     if(tstring == nullptr)
         return nullptr;
@@ -605,7 +605,7 @@ void txref_free_tstring(txref_tstring *tstring) {
  * @return a pointer to a new txref_DecodedResult struct, or NULL if error
  */
 extern "C"
-txref_DecodedResult * txref_create_DecodedResult() {
+txref_DecodedResult * txref_create_DecodedResult(void) {
     auto decodedResult =
             static_cast<txref_DecodedResult *> (calloc(1, sizeof(txref_DecodedResult)));
     if(decodedResult == nullptr)
