@@ -29,8 +29,5 @@ int main(int argc, char* argv[])
     std::cout << " txoIndex: " << decodedResult.txoIndex;
     std::cout << std::endl;
 
-
-
-
     return 0;
 }

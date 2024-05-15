@@ -20,7 +20,7 @@ int main() {
     if(err != E_TXREF_SUCCESS) {
         printf("%s\n", txref_strerror(err));
         txref_free_tstring(tstring);
-        return err;
+        return (int)err;
     }
 
     printf("mainnet, txref for (blockHeight = 10000, transactionIndex=2, txoIndex=3):\n%s\n", tstring->string);

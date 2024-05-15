@@ -26,7 +26,7 @@ RC_GTEST_PROP(TxrefTestRC, goodBlockHeightsAreAccepted, ()
 }
 
 
-// check that we reject block heights outside of the range
+// check that we reject block heights outside the range
 TEST(TxrefTest, reject_bad_block_heights) {
     EXPECT_THROW(checkBlockHeightRange(-1), std::runtime_error);
     EXPECT_THROW(checkBlockHeightRange(MAX_BLOCK_HEIGHT + 1), std::runtime_error);
@@ -58,7 +58,7 @@ RC_GTEST_PROP(TxrefTestRC, goodTransactionIndexesAreAccepted, ()
 }
 
 
-// check that we reject transaction indexes outside of the range
+// check that we reject transaction indexes outside the range
 TEST(TxrefTest, reject_bad_transaction_index) {
     EXPECT_THROW(checkTransactionIndexRange(-1), std::runtime_error);
     EXPECT_THROW(checkTransactionIndexRange(MAX_TRANSACTION_INDEX + 1), std::runtime_error);
@@ -88,7 +88,7 @@ RC_GTEST_PROP(TxrefTestRC, goodMagicCodesAreAccepted, ()
     checkMagicCodeRange(code);
 }
 
-// check that we reject magic codes outside of the range
+// check that we reject magic codes outside the range
 TEST(TxrefTest, reject_bad_magic_code) {
     EXPECT_THROW(checkMagicCodeRange(-1), std::runtime_error);
     EXPECT_THROW(checkMagicCodeRange(MAX_MAGIC_CODE + 1), std::runtime_error);
@@ -104,12 +104,12 @@ RC_GTEST_PROP(TxrefTestRC, badMagicCodesAreRejected, ()
     RC_ASSERT_THROWS_AS(checkMagicCodeRange(code), std::runtime_error);
 }
 
-TEST(TxrefTest, addDashes_inputStringTooShort) {
+TEST(TxrefTest, addGroupSeparators_inputStringTooShort) {
     EXPECT_THROW(addGroupSeparators("", 0, 1), std::runtime_error);
     EXPECT_THROW(addGroupSeparators("0", 0, 1), std::runtime_error);
 }
 
-TEST(TxrefTest, addDashes_HRPLongerThanInput) {
+TEST(TxrefTest, addGroupSeparators_HRPLongerThanInput) {
 
     // hrplen is zero, then the "rest" of the input is of length two, so one hyphen should be inserted
     auto result = addGroupSeparators("00", 0, 1);
@@ -127,16 +127,16 @@ TEST(TxrefTest, addDashes_HRPLongerThanInput) {
     EXPECT_THROW(addGroupSeparators("00", 3, 1), std::runtime_error);
 }
 
-TEST(TxrefTest, addDashes_HRPTooLong) {
+TEST(TxrefTest, addGroupSeparators_HRPTooLong) {
     EXPECT_THROW(addGroupSeparators("00", bech32::limits::MAX_HRP_LENGTH+1, 1), std::runtime_error);
 }
 
-TEST(TxrefTest, addDashes_separatorOffsetTooSmall) {
+TEST(TxrefTest, addGroupSeparators_separatorOffsetTooSmall) {
     EXPECT_THROW(addGroupSeparators("00", 0, -1), std::runtime_error);
     EXPECT_THROW(addGroupSeparators("00", 0, 0), std::runtime_error);
 }
 
-TEST(TxrefTest, addDashes_separatorOffsetTooLarge) {
+TEST(TxrefTest, addGroupSeparators_separatorOffsetTooLarge) {
     // if separatorOffset is greater than input string length, output should be the same
     auto result = addGroupSeparators("00", 0, 2);
     EXPECT_EQ(result, "00");
@@ -144,7 +144,7 @@ TEST(TxrefTest, addDashes_separatorOffsetTooLarge) {
     EXPECT_EQ(result, "00");
 }
 
-TEST(TxrefTest, addDashes_everyOtherCharacter) {
+TEST(TxrefTest, addGroupSeparators_everyOtherCharacter) {
     auto result = addGroupSeparators("00", 0, 1);
     EXPECT_EQ(result, "0-0");
 
@@ -158,7 +158,7 @@ TEST(TxrefTest, addDashes_everyOtherCharacter) {
     EXPECT_EQ(result, "0-0-0-0-0");
 }
 
-TEST(TxrefTest, addDashes_everyFewCharacters) {
+TEST(TxrefTest, addGroupSeparators_everyFewCharacters) {
     auto result = addGroupSeparators("0000000", 0, 1);
     EXPECT_EQ(result, "0-0-0-0-0-0-0");
 
@@ -172,7 +172,7 @@ TEST(TxrefTest, addDashes_everyFewCharacters) {
     EXPECT_EQ(result, "0000-000");
 }
 
-TEST(TxrefTest, addDashes_withHRPs) {
+TEST(TxrefTest, addGroupSeparators_withHRPs) {
     auto result = addGroupSeparators("A0000000", 1, 1);
     EXPECT_EQ(result, "A0-0-0-0-0-0-0");
 
