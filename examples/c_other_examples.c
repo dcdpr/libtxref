@@ -7,7 +7,7 @@
 #undef NDEBUG
 #include <assert.h>
 
-txref_error encodingExamples() {
+txref_error encodingExamples(void) {
 
     char main_hrp[] = "tx";
     char test_hrp[] = "txtest";
@@ -97,7 +97,7 @@ txref_error encodingExamples() {
     return E_TXREF_SUCCESS;
 }
 
-txref_error decodingExamples() {
+txref_error decodingExamples(void) {
 
     char main_hrp[] = "tx";
     char test_hrp[] = "txtest";
@@ -198,11 +198,11 @@ int main() {
 
     err = encodingExamples();
     if (err != E_TXREF_SUCCESS)
-        return err;
+        return (int)err;
 
     err = decodingExamples();
 
-    return err;
+    return (int)err;
 }
 
 

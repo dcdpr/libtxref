@@ -9,19 +9,19 @@
 #undef NDEBUG
 #include <assert.h>
 
-void strerror_withValidErrorCode_returnsErrorMessage() {
+void strerror_withValidErrorCode_returnsErrorMessage(void) {
     const char *message = txref_strerror(E_TXREF_SUCCESS);
     assert(message != NULL);
     assert(strcmp(message, "Success") == 0);
 }
 
-void strerror_withInvalidErrorCode_returnsUnknownErrorMessage() {
+void strerror_withInvalidErrorCode_returnsUnknownErrorMessage(void) {
     const char *message = txref_strerror(1234);
     assert(message != NULL);
     assert(strcmp(message, "Unknown error") == 0);
 }
 
-void encode_withBadArgs_isUnsuccessful() {
+void encode_withBadArgs_isUnsuccessful(void) {
     { // input is null
         txref_tstring * tstring = txref_create_tstring();
         assert(txref_encode(tstring, 10, 10, 10, false, NULL) == E_TXREF_NULL_ARGUMENT);
@@ -46,7 +46,7 @@ void encode_withBadArgs_isUnsuccessful() {
     }
 }
 
-void encode_whenMethodThrowsException_isUnsuccessful() {
+void encode_whenMethodThrowsException_isUnsuccessful(void) {
     // bech32 string can only have HRPs that are 83 chars or less. Attempt to encode an HRP string
     // with more than 83 chars and make sure that the exception thrown in the C++ code is caught
     // and returns an error code
@@ -58,7 +58,7 @@ void encode_whenMethodThrowsException_isUnsuccessful() {
     txref_free_tstring(tstring);
 }
 
-void encode_mainnetExamples_areSuccessful() {
+void encode_mainnetExamples_areSuccessful(void) {
     char hrp[] = "tx";
 
     struct examples {
@@ -89,7 +89,7 @@ void encode_mainnetExamples_areSuccessful() {
     }
 }
 
-void encode_mainnetExtendedExamples_areSuccessful() {
+void encode_mainnetExtendedExamples_areSuccessful(void) {
     char hrp[] = "tx";
 
     struct examples {
@@ -123,7 +123,7 @@ void encode_mainnetExtendedExamples_areSuccessful() {
     }
 }
 
-void encode_testnetExamples_areSuccessful() {
+void encode_testnetExamples_areSuccessful(void) {
     char hrp[] = "txtest";
 
     struct examples {
@@ -153,7 +153,7 @@ void encode_testnetExamples_areSuccessful() {
     }
 }
 
-void encode_testnetExtendedExamples_areSuccessful() {
+void encode_testnetExtendedExamples_areSuccessful(void) {
     char hrp[] = "txtest";
 
     struct examples {
@@ -186,7 +186,7 @@ void encode_testnetExtendedExamples_areSuccessful() {
     }
 }
 
-void encode_regtestExamples_areSuccessful() {
+void encode_regtestExamples_areSuccessful(void) {
     char hrp[] = "txrt";
 
     struct examples {
@@ -215,7 +215,7 @@ void encode_regtestExamples_areSuccessful() {
     }
 }
 
-void encode_regtestExtendedExamples_areSuccessful() {
+void encode_regtestExtendedExamples_areSuccessful(void) {
     char hrp[] = "txrt";
 
     struct examples {
@@ -244,7 +244,7 @@ void encode_regtestExtendedExamples_areSuccessful() {
     }
 }
 
-void decode_withBadArgs_isUnsuccessful() {
+void decode_withBadArgs_isUnsuccessful(void) {
 
     { // output is null
         char txref[] = "foo";
@@ -276,7 +276,7 @@ void decode_withBadArgs_isUnsuccessful() {
     }
 }
 
-void decode_whenMethodThrowsException_isUnsuccessful() {
+void decode_whenMethodThrowsException_isUnsuccessful(void) {
     // bech32 string can only have HRPs that are 83 chars or less. Attempt to decode a string
     // with more than 83 chars and make sure that the exception thrown in the C++ code is caught
     // and returns an error code
@@ -286,7 +286,7 @@ void decode_whenMethodThrowsException_isUnsuccessful() {
     txref_free_DecodedResult(decodedResult);
 }
 
-void decode_mainnetExamples_areSuccessful() {
+void decode_mainnetExamples_areSuccessful(void) {
     char hrp[] = "tx";
 
     struct examples {
@@ -318,7 +318,7 @@ void decode_mainnetExamples_areSuccessful() {
     }
 }
 
-void decode_mainnetExtendedExamples_areSuccessful() {
+void decode_mainnetExtendedExamples_areSuccessful(void) {
     char hrp[] = "tx";
 
     struct examples {
@@ -353,7 +353,7 @@ void decode_mainnetExtendedExamples_areSuccessful() {
     }
 }
 
-void decode_testnetExamples_areSuccessful() {
+void decode_testnetExamples_areSuccessful(void) {
     char hrp[] = "txtest";
 
     struct examples {
@@ -384,7 +384,7 @@ void decode_testnetExamples_areSuccessful() {
     }
 }
 
-void decode_testnetExtendedExamples_areSuccessful() {
+void decode_testnetExtendedExamples_areSuccessful(void) {
     char hrp[] = "txtest";
 
     struct examples {
@@ -418,7 +418,7 @@ void decode_testnetExtendedExamples_areSuccessful() {
     }
 }
 
-void decode_regtestExamples_areSuccessful() {
+void decode_regtestExamples_areSuccessful(void) {
     char hrp[] = "txrt";
 
     struct examples {
@@ -448,7 +448,7 @@ void decode_regtestExamples_areSuccessful() {
     }
 }
 
-void decode_regtestExtendedExamples_areSuccessful() {
+void decode_regtestExtendedExamples_areSuccessful(void) {
     char hrp[] = "txrt";
 
     struct examples {
@@ -478,7 +478,7 @@ void decode_regtestExtendedExamples_areSuccessful() {
     }
 }
 
-void decode_withOriginalChecksumConstant_hasCommentary() {
+void decode_withOriginalChecksumConstant_hasCommentary(void) {
     char txref[] = "txtest1:8jk0-uqay-zu4x-aw4h-zl";
     txref_DecodedResult *decodedResult = txref_create_DecodedResult();
 

@@ -295,9 +295,7 @@ namespace {
         std::string result = bech32::encode(hrp, dp);
 
         // add the dashes
-        std::string output = prettyPrint(result, hrp.length());
-
-        return output;
+        return prettyPrint(result, hrp.length());
     }
 
     std::string txrefExtEncode(
@@ -347,9 +345,7 @@ namespace {
         std::string result = bech32::encode(hrp, dp);
 
         // add the dashes
-        std::string output = prettyPrint(result, hrp.length());
-
-        return output;
+        return prettyPrint(result, hrp.length());
     }
 
     InputParam classifyInputStringBase(const std::string & str) {
@@ -551,13 +547,10 @@ const char *txref_errordesc[] = {
  */
 extern "C"
 const char * txref_strerror(txref_error error_code) {
-    const char * result = "";
-    if(error_code >= E_TXREF_SUCCESS && error_code < E_TXREF_MAX_ERROR) {
-        result = txref_errordesc[error_code];
-    }
+    if(error_code >= E_TXREF_SUCCESS && error_code < E_TXREF_MAX_ERROR)
+        return txref_errordesc[error_code];
     else
-        result = txref_errordesc[E_TXREF_UNKNOWN_ERROR];
-    return result;
+        return txref_errordesc[E_TXREF_UNKNOWN_ERROR];
 }
 
 /**
@@ -803,7 +796,6 @@ txref_error txref_encodeRegtest(
  *
  * @param decodedResult pointer to struct to copy the decoded transaction data
  * @param txref the txref string to decode
- * @param txreflen the length of the txref string
  *
  * @return E_TXREF_SUCCESS on success, others on error
  */

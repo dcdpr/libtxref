@@ -19,7 +19,7 @@ int main() {
     if(err != E_TXREF_SUCCESS) {
         printf("%s\n", txref_strerror(err));
         txref_free_DecodedResult(decodedResult);
-        return err;
+        return (int)err;
     }
 
     // check for expected values (see c_usage_encoding_example.c)
